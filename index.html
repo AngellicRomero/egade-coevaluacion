@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoEval — Coevaluación entre pares</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#fff;font-family:'Outfit',sans-serif;color:#111}
+.wrap{max-width:660px;margin:0 auto;padding:32px 20px 60px}
+.h1{font-family:'Source Serif 4',serif;font-size:26px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;color:#111}
+.h2{font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;margin-bottom:12px;color:#111}
+.sub{color:#999;font-size:13px;margin:0}
+.label{display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px}
+.inp{width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:'Outfit',sans-serif;color:#111;background:#fafafa;outline:none;transition:border-color .2s}
+.inp:focus{border-color:#111}.inp.err{border-color:#c62828;background:#fef5f5}
+textarea.inp{resize:vertical;min-height:48px}
+.card{background:#fff;border-radius:12px;border:1.5px solid #e5e5e5;padding:22px 24px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+.card-hover{cursor:pointer;transition:border-color .2s,box-shadow .2s;text-align:center}
+.card-hover:hover{border-color:#111;box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.btn-black{padding:13px 28px;background:#111;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:opacity .2s}
+.btn-black:hover{opacity:.85}.btn-black:disabled{opacity:.35;cursor:default}.btn-black.full{width:100%}
+.btn-outline{padding:12px 24px;background:none;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn-outline:hover{border-color:#999;color:#222}
+.btn-back{background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:20px;padding:0;transition:color .15s;display:inline-flex;align-items:center;gap:4px}
+.btn-back:hover{color:#555}
+.btn-dashed{width:100%;padding:11px;background:none;border:1.5px dashed #ddd;border-radius:8px;color:#aaa;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;margin-bottom:20px}
+.btn-dashed:hover{border-color:#111;color:#111}
+.btn-remove{background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;transition:color .15s}
+.btn-remove:hover{color:#c62828}
+.btn-sm{padding:7px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif}
+.stars{display:flex;gap:1px;align-items:center}
+.star-btn{background:none;border:none;cursor:pointer;font-size:23px;padding:2px 1px;line-height:1;color:#ddd;transition:color .1s,transform .1s}
+.star-btn.on{color:#b89a3d;transform:scale(1.15)}
+.star-val{font-size:11px;color:#aaa;margin-left:6px;font-weight:700}
+.crit-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;flex-wrap:wrap;gap:8px;background:#fafafa;margin-bottom:5px;transition:background .2s}
+.crit-row.err{background:#fef5f5}
+.crit-label{font-size:13px;color:#444;flex:1;min-width:150px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.flex-center{display:flex;justify-content:center;align-items:center}
+.text-center{text-align:center}
+.hidden{display:none!important}
+.tabs{display:flex;background:#f5f5f5;border-radius:8px;overflow:hidden}
+.tab-btn{padding:9px 18px;border:none;background:transparent;color:#999;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.tab-btn.active{background:#111;color:#fff}
+.tab-btn svg{width:14px;height:14px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat-card{background:#fafafa;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee}
+.stat-val{font-size:24px;font-weight:800;font-family:'Source Serif 4',serif;color:#111}
+.stat-lbl{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.5px}
+.instbox{background:#fafafa;border-radius:10px;padding:16px 20px;margin-bottom:24px;border-left:3px solid #111;font-size:14px;color:#555;line-height:1.6}
+.badge{padding:3px 12px;border-radius:20px;font-size:13px;font-weight:700;display:inline-block}
+.badge-g{background:#f0f0f0;color:#222}.badge-y{background:#f7f5ed;color:#8a7a3a}.badge-r{background:#fef5f5;color:#c62828}
+.tag{background:#f5f5f5;padding:3px 8px;border-radius:5px;font-size:11px;color:#777;display:inline-block;margin:2px}
+.confirm-bar{background:#fef5f5;border-radius:10px;padding:14px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.err-box{background:#fef5f5;border-radius:8px;padding:10px 16px;margin-bottom:14px;color:#c62828;font-size:13px}
+.success-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.prof-banner{background:#fafafa;border-radius:10px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;border:1px solid #eee}
+.prof-avatar{width:44px;height:44px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+.credential-box{background:#fafafa;border:1.5px solid #ddd;border-radius:12px;padding:24px;margin:20px 0}
+.credential-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.credential-row:last-child{border-bottom:none}
+.credential-label{font-size:12px;color:#999;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.credential-value{font-weight:700;font-size:15px;color:#111}
+.email-banner{background:#f5f5f5;border:1.5px solid #ddd;border-radius:10px;padding:14px 20px;margin:16px 0;display:flex;align-items:center;gap:10px;font-size:14px;color:#555}
+.send-email-box{background:#fafafa;border:1.5px solid #e0e0e0;border-radius:12px;padding:20px 24px;margin-bottom:20px}
+.send-email-box .status{margin-top:12px;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600}
+.ico{display:inline-flex;align-items:center;vertical-align:middle}
+.ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ico-sm svg{width:14px;height:14px}
+.ico-lg svg{width:24px;height:24px}
+.ico-xl svg{width:32px;height:32px}
+.stat-card .ico svg{width:20px;height:20px;color:#999}
+@media(max-width:600px){.row2{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr}.crit-row{flex-direction:column;align-items:flex-start}.prof-banner{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ═══ WEBHOOK ═══ */
+var EMAIL_WEBHOOK='PEGAR_URL_AQUI';
+
+/* ═══ SVG ICONS ═══ */
+var I={
+  fileText:'<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+  edit:'<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  briefcase:'<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  key:'<svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+  plusCircle:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  share:'<svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>',
+  barChart:'<svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
+  settings:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  clipboard:'<svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>',
+  users:'<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  target:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+  lock:'<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  mail:'<svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  check:'<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+  x:'<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  link:'<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  inbox:'<svg viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+  refresh:'<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
+  trash:'<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  download:'<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  arrowLeft:'<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>',
+  user:'<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  copy:'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  send:'<svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+  plus:'<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  alertCircle:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  checkCircle:'<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  xCircle:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+};
+function ico(name,cls){return'<span class="ico '+(cls||'')+'">'+I[name]+'</span>'}
+
+/* ═══ HELPERS ═══ */
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r='';for(var i=0;i<6;i++)r+=c[Math.floor(Math.random()*c.length)];return r}
+function genPassword(){var a=['Azul','Rojo','Verde','Solar','Norte','Alto','Luz','Mar','Oro','Nube'],b=['Roble','Tigre','Halcon','Rio','Monte','Cielo','Faro','Viento','Piedra','Aguila'];return a[Math.floor(Math.random()*a.length)]+b[Math.floor(Math.random()*b.length)]+String(Math.floor(Math.random()*90)+10)}
+function fmtDate(ts){return new Date(ts).toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+function getInitials(n){return(n||'??').split(' ').map(function(w){return w[0]}).slice(0,2).join('').toUpperCase()}
+function loadForm(c){try{var d=localStorage.getItem('coeval:'+c);return d?JSON.parse(d):null}catch(e){return null}}
+function saveForm(c,d){try{localStorage.setItem('coeval:'+c,JSON.stringify(d))}catch(e){}}
+function showE(id,m){var e=document.getElementById(id);if(e){e.textContent=m;e.classList.remove('hidden')}}
+function getBaseUrl(){return window.location.origin+window.location.pathname}
+function getStudentUrl(code){return getBaseUrl()+'?code='+code}
+function getQrImageUrl(code){return'https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=111111&data='+encodeURIComponent(getStudentUrl(code))}
+function getUrlParam(name){return new URLSearchParams(window.location.search).get(name)}
+var DEFAULT_CRITERIA=[{id:'c1',label:'Participación activa en el equipo'},{id:'c2',label:'Calidad de las aportaciones'},{id:'c3',label:'Cumplimiento de entregas a tiempo'},{id:'c4',label:'Comunicación y colaboración'},{id:'c5',label:'Responsabilidad individual'}];
+
+/* ═══ CSV ═══ */
+function buildCSV(res,crit){var h=['Fecha','Hora','Evaluador','Equipo','Evaluado'].concat(crit.map(function(c){return c.label})).concat(['Promedio','Comentarios']);var rows=[];res.forEach(function(r){r.evaluations.forEach(function(ev){var sc=crit.map(function(c){return ev.scores[c.id]||''});var nums=sc.filter(function(s){return typeof s==='number'});var avg=nums.length?(nums.reduce(function(a,b){return a+b},0)/nums.length).toFixed(2):'';var d=new Date(r.timestamp);rows.push([d.toLocaleDateString('es-MX'),d.toLocaleTimeString('es-MX'),'"'+r.evaluatorName+'"','"'+r.groupName+'"','"'+ev.peerName+'"'].concat(sc).concat([avg,'"'+(ev.comment||'').replace(/"/g,'""')+'"']).join(','))})});return h.join(',')+'\n'+rows.join('\n')}
+function downloadCSV(res,crit,title){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+buildCSV(res,crit)],{type:'text/csv;charset=utf-8;'}));a.download=(title||'coeval').replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv';a.click()}
+
+/* ═══ EMAIL ═══ */
+function sendWebhook(payload,cb){if(!EMAIL_WEBHOOK||EMAIL_WEBHOOK==='PEGAR_URL_AQUI'){if(cb)cb(false,'webhook_not_configured');return}fetch(EMAIL_WEBHOOK,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)}).then(function(r){return r.json()}).then(function(d){if(d&&d.ok){if(cb)cb(true)}else{if(cb)cb(false,'send_error')}}).catch(function(){if(cb)cb(false,'network_error')})}
+function sendCredentialEmail(email,name,course,code,pwd,ts,cb){sendWebhook({type:'credentials',to:email,profName:name,courseName:course,code:code,password:pwd,createdAt:fmtDate(ts),studentUrl:getStudentUrl(code)},cb)}
+function sendResultsEmail(email,name,course,code,csv,tF,tE,tP,cb){sendWebhook({type:'results',to:email,profName:name,courseName:course,code:code,csvContent:csv,totalForms:tF,totalEvals:tE,totalPeers:tP},cb)}
+
+/* ═══ STARS ═══ */
+function createStars(val,onChange){var w=document.createElement('div');w.className='stars';w.dataset.val=val||0;var vs=document.createElement('span');vs.className='star-val';vs.textContent=val?val+'/5':'';for(var i=1;i<=5;i++){(function(s){var b=document.createElement('button');b.type='button';b.className='star-btn'+(s<=val?' on':'');b.textContent='★';b.addEventListener('mouseenter',function(){w.querySelectorAll('.star-btn').forEach(function(x,j){x.classList.toggle('on',j<s)})});b.addEventListener('mouseleave',function(){var cur=parseInt(w.dataset.val)||0;w.querySelectorAll('.star-btn').forEach(function(x,j){x.classList.toggle('on',j<cur)})});b.addEventListener('click',function(){w.dataset.val=s;w.querySelectorAll('.star-btn').forEach(function(x,j){x.classList.toggle('on',j<s)});vs.textContent=s+'/5';onChange(s)});w.appendChild(b)})(i)}w.appendChild(vs);return w}
+
+/* ═══ RENDER ═══ */
+var app=document.getElementById('app'),peers=[];
+function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);({home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
+
+/* ═══ HOME ═══ */
+function renderHome(){
+  app.innerHTML='<div class="text-center" style="padding-top:60px"><div style="margin-bottom:16px">'+ico('fileText','ico-xl')+'</div>'
+    +'<h1 class="h1" style="font-size:30px;margin-bottom:6px">CoEval</h1>'
+    +'<p class="sub" style="font-size:15px;margin-bottom:44px">Plataforma de coevaluación entre pares</p>'
+    +'<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;max-width:460px;margin:0 auto">'
+    +'<div class="card card-hover" id="gs" style="flex:1;min-width:180px;padding:32px 24px"><div style="margin-bottom:12px;color:#555">'+ico('edit','ico-xl')+'</div><div style="font-weight:700;font-size:16px;margin-bottom:4px">Soy Alumno</div><div style="font-size:13px;color:#999">Tengo un código para evaluar</div></div>'
+    +'<div class="card card-hover" id="gp" style="flex:1;min-width:180px;padding:32px 24px"><div style="margin-bottom:12px;color:#555">'+ico('briefcase','ico-xl')+'</div><div style="font-weight:700;font-size:16px;margin-bottom:4px">Soy Profesor</div><div style="font-size:13px;color:#999">Crear o administrar formularios</div></div></div></div>';
+  document.getElementById('gs').addEventListener('click',function(){render('studentCode')});
+  document.getElementById('gp').addEventListener('click',function(){render('profMenu')});
+}
+
+/* ═══ STUDENT CODE ═══ */
+function renderStudentCode(){
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' Volver</button><div class="text-center" style="max-width:400px;margin:40px auto 0"><div style="margin-bottom:16px;color:#555">'+ico('key','ico-xl')+'</div><h2 class="h2" style="font-size:22px;margin-bottom:6px">Ingresa tu código</h2><p style="color:#999;font-size:14px;margin-bottom:28px">Tu profesor te compartió un código de 6 caracteres.</p><input id="ci" class="inp" maxlength="6" placeholder="CÓDIGO" style="text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;padding:16px;text-transform:uppercase"><p id="ce" style="color:#c62828;font-size:13px;margin-top:8px" class="hidden"></p><button class="btn-black full" style="margin-top:16px" id="cg">Continuar</button></div>';
+  document.getElementById('bk').addEventListener('click',function(){render('home')});var inp=document.getElementById('ci');inp.focus();
+  inp.addEventListener('input',function(){this.value=this.value.toUpperCase();document.getElementById('ce').classList.add('hidden')});
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('cg').click()});
+  document.getElementById('cg').addEventListener('click',function(){var c=inp.value.trim().toUpperCase();if(c.length<4){showE('ce','Ingresa el código');return}var f=loadForm(c);if(!f){showE('ce','No se encontró ese formulario');return}render('studentForm',{code:c,form:f})});
+}
+
+/* ═══ STUDENT FORM ═══ */
+function renderStudentForm(code,formData){
+  var cfg=formData.config;peers=[{id:uid(),name:'',scores:{},comment:''}];
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' Volver</button><div class="text-center" style="margin-bottom:20px"><h1 class="h1">'+esc(cfg.title)+'</h1>'+(cfg.courseName?'<p style="color:#555;font-size:15px;margin:4px 0">'+esc(cfg.courseName)+'</p>':'')+'<span style="display:inline-block;margin-top:6px;font-size:11px;color:#aaa;background:#f5f5f5;padding:4px 12px;border-radius:12px;font-weight:600">Código: '+code+'</span></div>'
+    +(cfg.profName?'<div class="prof-banner"><div class="prof-avatar">'+getInitials(cfg.profName)+'</div><div><div style="font-weight:700;font-size:15px">'+esc(cfg.profName)+'</div><div style="font-size:13px;color:#999">Profesor'+(cfg.courseName?' · '+esc(cfg.courseName):'')+'</div></div></div>':'')
+    +'<div class="instbox">'+esc(cfg.instructions)+'</div>'
+    +'<div class="row2"><div><label class="label">Tu nombre completo *</label><input class="inp" id="en" placeholder="Nombre completo"></div><div><label class="label">Equipo / Grupo *</label><input class="inp" id="eg" placeholder="Ej: Equipo 3"></div></div>'
+    +'<div id="pc"></div><button class="btn-dashed" id="ap">'+ico('plus','ico-sm')+' Agregar otro compañero</button>'
+    +'<div id="fe" class="err-box hidden">Completa todos los campos obligatorios y calificaciones.</div>'
+    +'<button class="btn-black full" id="sb" style="padding:15px;font-size:16px;box-shadow:0 2px 12px rgba(0,0,0,.1)">Enviar evaluación</button>';
+  document.getElementById('bk').addEventListener('click',function(){render('studentCode')});
+  document.getElementById('ap').addEventListener('click',function(){peers.push({id:uid(),name:'',scores:{},comment:''});buildP(cfg)});
+  document.getElementById('sb').addEventListener('click',function(){
+    var en=document.getElementById('en').value.trim(),eg=document.getElementById('eg').value.trim(),err=false;
+    document.getElementById('en').classList.toggle('err',!en);document.getElementById('eg').classList.toggle('err',!eg);if(!en||!eg)err=true;
+    peers.forEach(function(p){var ni=document.getElementById('pn-'+p.id);if(!p.name.trim()){ni.classList.add('err');err=true}else ni.classList.remove('err');cfg.criteria.forEach(function(c){var cr=document.getElementById('cx-'+p.id+'-'+c.id);if(!p.scores[c.id]){cr.classList.add('err');err=true}else cr.classList.remove('err')})});
+    if(err){document.getElementById('fe').classList.remove('hidden');return}document.getElementById('fe').classList.add('hidden');
+    var evals=peers.map(function(p){return{peerName:p.name.trim(),scores:JSON.parse(JSON.stringify(p.scores)),comment:p.comment.trim()}});
+    var r={id:uid(),timestamp:Date.now(),evaluatorName:en,groupName:eg,evaluations:evals};var lt=loadForm(code);if(!lt)return;if(!lt.responses)lt.responses=[];lt.responses.push(r);saveForm(code,lt);render('studentSuccess',{code:code})});
+  buildP(cfg);
+}
+function buildP(cfg){var ct=document.getElementById('pc');ct.innerHTML='';peers.forEach(function(peer,idx){
+  var card=document.createElement('div');card.className='card';
+  var hd=document.createElement('div');hd.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:14px';hd.innerHTML='<span style="font-family:Source Serif 4,serif;font-size:16px;font-weight:700">Compañero '+(idx+1)+'</span>';
+  if(peers.length>1){var rm=document.createElement('button');rm.className='btn-remove';rm.textContent='✕';rm.addEventListener('click',function(){peers=peers.filter(function(p){return p.id!==peer.id});buildP(cfg)});hd.appendChild(rm)}card.appendChild(hd);
+  var nw=document.createElement('div');nw.style.marginBottom='14px';nw.innerHTML='<label class="label">Nombre *</label>';var ni=document.createElement('input');ni.className='inp';ni.id='pn-'+peer.id;ni.placeholder='Nombre del compañero';ni.value=peer.name;ni.addEventListener('input',function(){peer.name=this.value});nw.appendChild(ni);card.appendChild(nw);
+  var cw=document.createElement('div');cfg.criteria.forEach(function(crit){var row=document.createElement('div');row.className='crit-row';row.id='cx-'+peer.id+'-'+crit.id;var lbl=document.createElement('span');lbl.className='crit-label';lbl.textContent=crit.label;row.appendChild(lbl);row.appendChild(createStars(peer.scores[crit.id]||0,function(v){peer.scores[crit.id]=v}));cw.appendChild(row)});card.appendChild(cw);
+  var cmw=document.createElement('div');cmw.style.marginTop='14px';cmw.innerHTML='<label class="label">Comentarios <span style="font-weight:400;text-transform:none">(opcional)</span></label>';var cmi=document.createElement('textarea');cmi.className='inp';cmi.rows=2;cmi.placeholder='Retroalimentación constructiva…';cmi.value=peer.comment;cmi.addEventListener('input',function(){peer.comment=this.value});cmw.appendChild(cmi);card.appendChild(cmw);ct.appendChild(card)})}
+
+/* ═══ STUDENT SUCCESS ═══ */
+function renderStudentSuccess(code){
+  app.innerHTML='<div class="text-center" style="padding-top:80px"><div class="success-circle" style="background:#f0f0f0;color:#111">'+ico('check','ico-xl')+'</div><h2 class="h2" style="font-size:24px;margin-bottom:6px">Evaluación registrada</h2><p style="color:#999;font-size:14px;margin-bottom:32px">Tus respuestas se guardaron correctamente.</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn-black" id="ag">Evaluar otro compañero</button><button class="btn-outline" id="hm">Inicio</button></div></div>';
+  document.getElementById('ag').addEventListener('click',function(){var f=loadForm(code);if(f)render('studentForm',{code:code,form:f})});
+  document.getElementById('hm').addEventListener('click',function(){render('home')});
+}
+
+/* ═══ PROF MENU ═══ */
+function renderProfMenu(){
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' Volver</button><div class="text-center" style="margin-bottom:28px"><div style="margin-bottom:12px;color:#555">'+ico('briefcase','ico-xl')+'</div><h2 class="h2" style="font-size:22px">Panel del Profesor</h2></div>'
+    +'<div style="max-width:420px;margin:0 auto"><div class="card card-hover" id="gc" style="padding:28px 20px"><div style="margin-bottom:8px;color:#555">'+ico('plusCircle','ico-lg')+'</div><div style="font-weight:700;font-size:15px">Crear nuevo formulario</div><div style="font-size:13px;color:#999;margin-top:2px">Recibe código y contraseña por correo</div></div>'
+    +'<div class="text-center" style="color:#ddd;font-size:12px;font-weight:700;margin:20px 0;letter-spacing:2px">— O ABRE UNO EXISTENTE —</div>'
+    +'<div class="card" style="padding:24px"><div style="margin-bottom:14px"><label class="label">Código del formulario</label><input class="inp" id="oc" maxlength="6" placeholder="CÓDIGO" style="text-align:center;font-size:18px;font-weight:700;letter-spacing:4px"></div>'
+    +'<div style="margin-bottom:14px"><label class="label">Contraseña</label><input class="inp" id="op" type="password" placeholder="Revisa tu correo de credenciales"></div>'
+    +'<p id="oe" class="hidden" style="color:#c62828;font-size:13px;margin-bottom:10px"></p><button class="btn-black full" id="og">Abrir formulario</button></div></div>';
+  document.getElementById('bk').addEventListener('click',function(){render('home')});document.getElementById('gc').addEventListener('click',function(){render('profCreate')});
+  var ci=document.getElementById('oc');ci.addEventListener('input',function(){this.value=this.value.toUpperCase()});
+  document.getElementById('op').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('og').click()});
+  document.getElementById('og').addEventListener('click',function(){var c=ci.value.trim().toUpperCase(),p=document.getElementById('op').value.trim();if(!c){showE('oe','Ingresa el código');return}var f=loadForm(c);if(!f){showE('oe','No se encontró ese formulario');return}if(f.config.profCode&&p!==f.config.profCode){showE('oe','Contraseña incorrecta');return}render('profDash',{code:c})});
+}
+
+/* ═══ PROF CREATE ═══ */
+function renderProfCreate(){
+  var criteria=DEFAULT_CRITERIA.map(function(c){return{id:c.id,label:c.label}});
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' Volver</button><h2 class="h2" style="font-size:22px;margin-bottom:24px">Crear formulario</h2>'
+    +'<div style="background:#fafafa;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #eee"><p style="font-size:12px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px">'+ico('user','ico-sm')+' Datos del profesor</p>'
+    +'<div style="margin-bottom:14px"><label class="label">Nombre completo *</label><input class="inp" id="pn" placeholder="Ej: Dra. María García López"></div>'
+    +'<div><label class="label">Correo institucional *</label><input class="inp" id="pe" type="email" placeholder="nombre@tec.mx"><p style="font-size:12px;color:#aaa;margin-top:4px">Recibirás código y contraseña en tu correo @tec.mx</p></div></div>'
+    +'<div style="margin-bottom:16px"><label class="label">Nombre del curso *</label><input class="inp" id="cn" placeholder="Ej: Mercadotecnia Digital — Grupo 301"></div>'
+    +'<div style="margin-bottom:16px"><label class="label">Título del formulario</label><input class="inp" id="ft" value="Coevaluación de Equipo"></div>'
+    +'<div style="margin-bottom:16px"><label class="label">Instrucciones para alumnos</label><textarea class="inp" id="fi" rows="3">Evalúa a cada uno de tus compañeros de equipo en una escala del 1 al 5 para cada criterio. Sé honesto(a) y constructivo(a).</textarea></div>'
+    +'<div style="margin-bottom:24px"><label class="label" style="margin-bottom:10px">Criterios de evaluación</label><div id="cc"></div><button class="btn-dashed" id="ac" style="margin-top:6px;margin-bottom:0;width:auto;padding:8px 14px;font-size:13px">'+ico('plus','ico-sm')+' Agregar criterio</button></div>'
+    +'<button class="btn-black full" id="cf" style="padding:15px;font-size:16px">Crear formulario y enviar credenciales</button><p id="cfe" class="hidden" style="color:#c62828;font-size:13px;margin-top:10px;text-align:center"></p>';
+  document.getElementById('bk').addEventListener('click',function(){render('profMenu')});
+  function rebC(){var d=document.getElementById('cc');d.innerHTML='';criteria.forEach(function(c,i){var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:8px';row.innerHTML='<span style="font-size:12px;color:#ccc;width:20px;text-align:center">'+(i+1)+'</span>';var inp=document.createElement('input');inp.className='inp';inp.style.flex='1';inp.value=c.label;inp.placeholder='Criterio…';(function(idx){inp.addEventListener('input',function(){criteria[idx].label=this.value})})(i);row.appendChild(inp);if(criteria.length>1){var rm=document.createElement('button');rm.className='btn-remove';rm.textContent='×';(function(idx){rm.addEventListener('click',function(){criteria.splice(idx,1);rebC()})})(i);row.appendChild(rm)}d.appendChild(row)})}
+  rebC();document.getElementById('ac').addEventListener('click',function(){criteria.push({id:'c'+Date.now(),label:''});rebC()});
+  document.getElementById('cf').addEventListener('click',function(){var pn=document.getElementById('pn').value.trim(),pe=document.getElementById('pe').value.trim(),cn=document.getElementById('cn').value.trim();document.getElementById('pn').classList.toggle('err',!pn);document.getElementById('pe').classList.toggle('err',!pe);document.getElementById('cn').classList.toggle('err',!cn);if(!pn||!pe||!cn){showE('cfe','Completa los campos obligatorios');return}if(!pe.endsWith('@tec.mx')){showE('cfe','El correo debe ser institucional (@tec.mx)');return}var clean=criteria.filter(function(c){return c.label.trim()});if(!clean.length){showE('cfe','Agrega al menos un criterio');return}var code=genCode(),pwd=genPassword(),now=Date.now();var form={config:{title:document.getElementById('ft').value.trim()||'Coevaluación de Equipo',courseName:cn,profName:pn,profEmail:pe,instructions:document.getElementById('fi').value.trim(),criteria:clean,profCode:pwd},responses:[],createdAt:now};saveForm(code,form);render('profCreated',{code:code,form:form,password:pwd});sendCredentialEmail(pe,pn,cn,code,pwd,now,function(ok,reason){var st=document.getElementById('email-status');if(!st)return;if(ok){st.style.background='#f0f0f0';st.style.borderColor='#ddd';st.style.color='#333';st.innerHTML=ico('checkCircle','ico-sm')+' <span>Credenciales enviadas a <strong>'+esc(pe)+'</strong></span>'}else if(reason==='webhook_not_configured'){st.style.background='#f7f5ed';st.style.borderColor='#e5e0c8';st.style.color='#8a7a3a';st.innerHTML=ico('alertCircle','ico-sm')+' <span>Webhook no configurado. Configura el Google Apps Script.</span>'}else{st.style.background='#fef5f5';st.style.borderColor='#ecc';st.style.color='#c62828';st.innerHTML=ico('xCircle','ico-sm')+' <span>Error al enviar. Usa "Reenviar" abajo.</span>'}})});
+}
+
+/* ═══ PROF CREATED ═══ */
+function renderProfCreated(code,form,pwd){
+  var cfg=form.config,qr=getQrImageUrl(code),surl=getStudentUrl(code);
+  app.innerHTML='<div class="text-center"><div class="success-circle" style="background:#f0f0f0;color:#111">'+ico('check','ico-xl')+'</div><h2 class="h2" style="font-size:24px;margin-bottom:4px">Formulario creado</h2><p style="color:#999;font-size:14px;margin-bottom:8px">'+esc(cfg.courseName)+'</p></div>'
+    +'<div class="email-banner" id="email-status">'+ico('mail','ico-sm')+' <span>Enviando credenciales a <strong>'+esc(cfg.profEmail)+'</strong>…</span></div>'
+    +'<div class="credential-box"><p style="font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px">'+ico('lock','ico-sm')+' Tus credenciales</p>'
+    +'<div class="credential-row"><span class="credential-label">Código</span><span class="credential-value" style="font-size:22px;letter-spacing:4px">'+code+'</span></div>'
+    +'<div class="credential-row"><span class="credential-label">Contraseña</span><span class="credential-value">'+esc(pwd)+'</span></div>'
+    +'<div class="credential-row"><span class="credential-label">Profesor</span><span class="credential-value" style="font-size:14px">'+esc(cfg.profName)+'</span></div>'
+    +'<div class="credential-row"><span class="credential-label">Curso</span><span class="credential-value" style="font-size:14px">'+esc(cfg.courseName)+'</span></div>'
+    +'<div class="credential-row"><span class="credential-label">Creado</span><span class="credential-value" style="font-size:13px;color:#777">'+fmtDate(form.createdAt)+'</span></div></div>'
+    +'<div class="text-center" style="margin:24px 0"><p style="font-size:12px;color:#999;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:1px">QR para alumnos</p><p style="font-size:12px;color:#aaa;margin-bottom:14px">Al escanearlo, abre directamente el formulario</p><img src="'+qr+'" alt="QR" style="width:220px;height:220px;border-radius:8px;border:1px solid #eee"><p style="font-size:12px;color:#bbb;margin-top:10px;word-break:break-all;max-width:400px;margin-left:auto;margin-right:auto">'+esc(surl)+'</p></div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"><button class="btn-outline" id="cp" style="flex:1">'+ico('copy','ico-sm')+' Copiar texto</button><a href="'+qr+'" download="QR_'+code+'.png" class="btn-outline" style="flex:1">'+ico('download','ico-sm')+' Descargar QR</a></div>'
+    +'<button class="btn-outline" id="cl" style="width:100%;margin-bottom:12px">'+ico('link','ico-sm')+' Copiar link directo</button>'
+    +'<button class="btn-outline" id="re" style="width:100%;margin-bottom:12px">'+ico('mail','ico-sm')+' Reenviar correo de credenciales</button>'
+    +'<button class="btn-black full" id="go" style="margin-top:4px">Ir al panel de resultados</button>'
+    +'<button class="btn-back" id="nw" style="display:block;margin:16px auto 0;text-align:center">'+ico('plus','ico-sm')+' Crear otro formulario</button>';
+  document.getElementById('cp').addEventListener('click',function(){navigator.clipboard.writeText('Coevaluación: '+(cfg.courseName||cfg.title)+'\nProfesor: '+cfg.profName+'\nLink: '+surl+'\nCódigo: '+code).then(function(){document.getElementById('cp').innerHTML=ico('check','ico-sm')+' Copiado'})});
+  document.getElementById('cl').addEventListener('click',function(){navigator.clipboard.writeText(surl).then(function(){document.getElementById('cl').innerHTML=ico('check','ico-sm')+' Copiado'})});
+  document.getElementById('re').addEventListener('click',function(){var b=this;b.innerHTML=ico('mail','ico-sm')+' Enviando…';b.disabled=true;sendCredentialEmail(cfg.profEmail,cfg.profName,cfg.courseName,code,pwd,form.createdAt,function(ok){if(ok){b.innerHTML=ico('check','ico-sm')+' Reenviado';b.style.color='#333'}else{b.innerHTML=ico('alertCircle','ico-sm')+' Error';b.disabled=false}})});
+  document.getElementById('go').addEventListener('click',function(){render('profDash',{code:code})});
+  document.getElementById('nw').addEventListener('click',function(){render('profCreate')});
+}
+
+/* ═══ PROF DASHBOARD ═══ */
+function renderProfDash(code){
+  var fd=loadForm(code);if(!fd){render('profMenu');return}var tab='share',fg='';
+  function draw(){
+    fd=loadForm(code)||fd;var cfg=fd.config,res=fd.responses||[],qr=getQrImageUrl(code),surl=getStudentUrl(code);
+    var fil=fg?res.filter(function(r){return r.groupName===fg}):res;var grps=[];res.forEach(function(r){if(grps.indexOf(r.groupName)<0)grps.push(r.groupName)});grps.sort();
+    var tot=fil.reduce(function(s,r){return s+r.evaluations.length},0);var agg={};fil.forEach(function(r){r.evaluations.forEach(function(ev){var k=ev.peerName.toLowerCase().trim();if(!agg[k])agg[k]={name:ev.peerName,group:r.groupName,scores:{},count:0,comments:[]};agg[k].count++;cfg.criteria.forEach(function(c){if(ev.scores[c.id])agg[k].scores[c.id]=(agg[k].scores[c.id]||0)+ev.scores[c.id]});if(ev.comment)agg[k].comments.push({from:r.evaluatorName,text:ev.comment})})});var aggKeys=Object.keys(agg);
+
+    app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' Panel profesor</button><div class="text-center" style="margin-bottom:4px"><h1 class="h1">'+esc(cfg.title)+'</h1>'+(cfg.courseName?'<p style="color:#555;font-size:15px;margin:2px 0">'+esc(cfg.courseName)+'</p>':'')+(cfg.profName?'<p class="sub">'+esc(cfg.profName)+'</p>':'')+'</div>'
+      +'<div class="flex-center" style="margin:20px 0 28px"><div class="tabs"><button class="tab-btn '+(tab==='share'?'active':'')+'" data-t="share">'+ico('share','ico-sm')+' Compartir</button><button class="tab-btn '+(tab==='results'?'active':'')+'" data-t="results">'+ico('barChart','ico-sm')+' Resultados</button><button class="tab-btn '+(tab==='config'?'active':'')+'" data-t="config">'+ico('settings','ico-sm')+' Configurar</button></div></div><div id="tc"></div>';
+    document.getElementById('bk').addEventListener('click',function(){render('profMenu')});document.querySelectorAll('.tab-btn').forEach(function(b){b.addEventListener('click',function(){tab=this.dataset.t;draw()})});
+    var tc=document.getElementById('tc');
+
+    if(tab==='share'){
+      tc.innerHTML='<div class="text-center"><div class="card" style="display:inline-block;padding:32px 40px"><p style="font-size:12px;color:#999;margin-bottom:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px">Código del formulario</p><div style="font-size:40px;font-weight:800;letter-spacing:10px;margin-bottom:20px;color:#111">'+code+'</div><img src="'+qr+'" alt="QR" style="width:220px;height:220px;border-radius:8px;border:1px solid #eee"><p style="font-size:12px;color:#bbb;margin-top:10px;word-break:break-all;max-width:360px;margin-left:auto;margin-right:auto">'+esc(surl)+'</p><div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap"><button class="btn-outline" id="cpt">'+ico('copy','ico-sm')+' Copiar texto</button><button class="btn-outline" id="cpl">'+ico('link','ico-sm')+' Link</button><a href="'+qr+'" download="QR_'+code+'.png" class="btn-outline">'+ico('download','ico-sm')+' QR</a></div></div>'
+        +'<div class="stats-grid" style="margin-top:24px"><div class="stat-card"><div style="color:#999;margin-bottom:4px">'+ico('clipboard')+'</div><div class="stat-val">'+res.length+'</div><div class="stat-lbl">Formularios</div></div><div class="stat-card"><div style="color:#999;margin-bottom:4px">'+ico('users')+'</div><div class="stat-val">'+tot+'</div><div class="stat-lbl">Evaluaciones</div></div><div class="stat-card"><div style="color:#999;margin-bottom:4px">'+ico('target')+'</div><div class="stat-val">'+aggKeys.length+'</div><div class="stat-lbl">Evaluados</div></div></div>'
+        +'<div style="margin-top:16px;font-size:12px;color:#bbb">Creado: '+fmtDate(fd.createdAt)+'</div></div>';
+      document.getElementById('cpt').addEventListener('click',function(){navigator.clipboard.writeText('Coevaluación: '+cfg.courseName+'\nProfesor: '+cfg.profName+'\n'+surl+'\nCódigo: '+code).then(function(){document.getElementById('cpt').innerHTML=ico('check','ico-sm')+' Copiado'})});
+      document.getElementById('cpl').addEventListener('click',function(){navigator.clipboard.writeText(surl).then(function(){document.getElementById('cpl').innerHTML=ico('check','ico-sm')+' Copiado'})});
+
+    }else if(tab==='results'){
+      var h='<div class="send-email-box"><p style="font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px">'+ico('mail','ico-sm')+' Enviar resultados por correo</p><div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><div style="flex:1;min-width:200px"><label class="label">Correo del destinatario</label><input class="inp" id="send-email" value="'+esc(cfg.profEmail||'')+'" placeholder="nombre@tec.mx"></div><button class="btn-black" id="send-results" style="padding:12px 24px;white-space:nowrap;display:flex;align-items:center;gap:6px" '+(fil.length?'':'disabled')+'>'+ico('send','ico-sm')+' Enviar</button></div><div id="send-status"></div>'+(fil.length?'':'<p style="font-size:12px;color:#aaa;margin-top:8px">No hay resultados para enviar.</p>')+'</div>';
+      h+='<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center"><button class="btn-outline" id="dl" style="padding:10px 20px" '+(fil.length?'':'disabled')+'>'+ico('download','ico-sm')+' Descargar resultados en Excel</button><button class="btn-outline" id="rf" style="padding:10px 16px">'+ico('refresh','ico-sm')+' Actualizar</button><button class="btn-outline" id="clr" style="padding:10px 16px;'+(res.length?'color:#c62828;border-color:#c62828':'color:#ddd;border-color:#eee')+'" '+(res.length?'':'disabled')+'>'+ico('trash','ico-sm')+' Eliminar</button>';
+      if(grps.length>1){h+='<select id="fgs" class="inp" style="width:auto;padding:10px 12px;font-size:13px"><option value="">Todos</option>';grps.forEach(function(g){h+='<option value="'+esc(g)+'" '+(fg===g?'selected':'')+'>'+esc(g)+'</option>'});h+='</select>'}h+='</div><div id="ca"></div>';
+      if(aggKeys.length>0){h+='<h3 class="h2" style="font-size:17px;margin-top:8px">Resumen por evaluado</h3>';aggKeys.map(function(k){return agg[k]}).sort(function(a,b){var aa=cfg.criteria.reduce(function(s,c){return s+(a.scores[c.id]||0)},0)/(a.count*cfg.criteria.length);var bb=cfg.criteria.reduce(function(s,c){return s+(b.scores[c.id]||0)},0)/(b.count*cfg.criteria.length);return bb-aa}).forEach(function(p){var avg=cfg.criteria.reduce(function(s,c){return s+(p.scores[c.id]||0)},0)/(p.count*cfg.criteria.length);var bc=avg>=4?'badge-g':avg>=3?'badge-y':'badge-r';h+='<div class="card" style="padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><span style="font-weight:700;font-size:14px">'+esc(p.name)+'</span><span style="font-size:12px;color:#aaa;margin-left:8px">'+esc(p.group)+'</span></div><span class="badge '+bc+'">'+avg.toFixed(1)+'</span></div><div>';cfg.criteria.forEach(function(c){var ca=(p.scores[c.id]||0)/p.count;h+='<span class="tag">'+esc(c.label.slice(0,20))+'… <strong>'+ca.toFixed(1)+'</strong></span>'});h+='</div><div style="font-size:11px;color:#aaa;margin-top:4px">'+p.count+' eval.</div>';if(p.comments.length){h+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0">';p.comments.forEach(function(cm){h+='<div style="font-size:12px;color:#777;margin-bottom:3px"><span style="font-weight:600;color:#aaa">'+esc(cm.from)+':</span> <em>"'+esc(cm.text)+'"</em></div>'});h+='</div>'}h+='</div>'})}
+      if(fil.length){h+='<h3 class="h2" style="font-size:17px;margin-top:20px">Detalle</h3>';fil.slice().reverse().forEach(function(r){h+='<div class="card" style="padding:14px 18px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-weight:700;font-size:14px">'+esc(r.evaluatorName)+'</span><span style="font-size:11px;color:#ccc">'+new Date(r.timestamp).toLocaleString('es-MX')+'</span></div><div style="font-size:12px;color:#aaa;margin-bottom:8px">'+esc(r.groupName)+'</div>';r.evaluations.forEach(function(ev){h+='<div style="background:#fafafa;border-radius:7px;padding:9px 12px;margin-bottom:4px"><div style="font-weight:600;font-size:13px;margin-bottom:2px">→ '+esc(ev.peerName)+'</div><div style="display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:#888">';cfg.criteria.forEach(function(c){h+='<span>'+esc(c.label.slice(0,14))+'…: <strong style="color:#444">'+(ev.scores[c.id]||'–')+'</strong></span>'});h+='</div>';if(ev.comment)h+='<div style="font-size:12px;color:#666;margin-top:3px;font-style:italic">"'+esc(ev.comment)+'"</div>';h+='</div>'});h+='</div>'})}else h+='<div class="text-center" style="padding:50px 20px;color:#ccc"><div style="margin-bottom:8px">'+ico('inbox','ico-xl')+'</div><p style="font-size:14px;color:#aaa">Sin respuestas aún.</p></div>';
+      tc.innerHTML=h;
+      var sendBtn=document.getElementById('send-results');if(sendBtn)sendBtn.addEventListener('click',function(){var emailTo=document.getElementById('send-email').value.trim(),statusDiv=document.getElementById('send-status');if(!emailTo||!emailTo.includes('@')){document.getElementById('send-email').classList.add('err');statusDiv.innerHTML='<div class="status" style="background:#fef5f5;color:#c62828">Ingresa un correo válido</div>';return}document.getElementById('send-email').classList.remove('err');sendBtn.disabled=true;sendBtn.innerHTML=ico('send','ico-sm')+' Enviando…';statusDiv.innerHTML='<div class="status" style="background:#f5f5f5;color:#555">Enviando resultados…</div>';sendResultsEmail(emailTo,cfg.profName||'',cfg.courseName||'',code,buildCSV(fil,cfg.criteria),fil.length,tot,aggKeys.length,function(ok,reason){if(ok){statusDiv.innerHTML='<div class="status" style="background:#f0f0f0;color:#333">'+ico('checkCircle','ico-sm')+' Resultados enviados a <strong>'+esc(emailTo)+'</strong></div>';sendBtn.innerHTML=ico('check','ico-sm')+' Enviado';setTimeout(function(){sendBtn.innerHTML=ico('send','ico-sm')+' Enviar';sendBtn.disabled=false},4000)}else if(reason==='webhook_not_configured'){statusDiv.innerHTML='<div class="status" style="background:#f7f5ed;color:#8a7a3a">'+ico('alertCircle','ico-sm')+' Webhook no configurado.</div>';sendBtn.innerHTML=ico('send','ico-sm')+' Enviar';sendBtn.disabled=false}else{statusDiv.innerHTML='<div class="status" style="background:#fef5f5;color:#c62828">'+ico('xCircle','ico-sm')+' Error al enviar.</div>';sendBtn.innerHTML=ico('send','ico-sm')+' Reintentar';sendBtn.disabled=false}})});
+      var dlBtn=document.getElementById('dl');if(dlBtn)dlBtn.addEventListener('click',function(){downloadCSV(fil,cfg.criteria,cfg.title)});
+      var rfBtn=document.getElementById('rf');if(rfBtn)rfBtn.addEventListener('click',draw);
+      var fgSel=document.getElementById('fgs');if(fgSel)fgSel.addEventListener('change',function(){fg=this.value;draw()});
+      var clrBtn=document.getElementById('clr');if(clrBtn)clrBtn.addEventListener('click',function(){document.getElementById('ca').innerHTML='<div class="confirm-bar"><span style="font-size:13px;color:#c62828">¿Eliminar todas las respuestas?</span><div style="display:flex;gap:8px"><button class="btn-sm" id="dc" style="background:#c62828;color:#fff">Eliminar</button><button class="btn-sm" id="xc" style="background:none;border:1px solid #ddd">Cancelar</button></div></div>';document.getElementById('dc').addEventListener('click',function(){fd.responses=[];saveForm(code,fd);draw()});document.getElementById('xc').addEventListener('click',function(){document.getElementById('ca').innerHTML=''})});
+
+    }else if(tab==='config'){
+      var crit=cfg.criteria.map(function(c){return{id:c.id,label:c.label}});
+      tc.innerHTML='<div style="background:#fafafa;border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid #eee"><p style="font-size:12px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px">'+ico('user','ico-sm')+' Profesor</p><div style="margin-bottom:14px"><label class="label">Nombre</label><input class="inp" id="xpn" value="'+esc(cfg.profName||'')+'"></div><div><label class="label">Correo institucional</label><input class="inp" id="xpe" value="'+esc(cfg.profEmail||'')+'"></div></div>'
+        +'<div style="margin-bottom:16px"><label class="label">Curso</label><input class="inp" id="xcn" value="'+esc(cfg.courseName||'')+'"></div>'
+        +'<div style="margin-bottom:16px"><label class="label">Título</label><input class="inp" id="xft" value="'+esc(cfg.title)+'"></div>'
+        +'<div style="margin-bottom:16px"><label class="label">Instrucciones</label><textarea class="inp" id="xfi" rows="3">'+esc(cfg.instructions)+'</textarea></div>'
+        +'<div style="margin-bottom:24px"><label class="label" style="margin-bottom:10px">Criterios</label><div id="xcc"></div><button class="btn-dashed" id="xac" style="margin-top:6px;margin-bottom:0;width:auto;padding:8px 14px;font-size:13px">'+ico('plus','ico-sm')+' Agregar criterio</button></div>'
+        +'<button class="btn-black" id="xs">Guardar cambios</button>';
+      function rebX(){var d=document.getElementById('xcc');d.innerHTML='';crit.forEach(function(c,i){var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:8px';row.innerHTML='<span style="font-size:12px;color:#ccc;width:20px;text-align:center">'+(i+1)+'</span>';var inp=document.createElement('input');inp.className='inp';inp.style.flex='1';inp.value=c.label;inp.placeholder='Criterio…';(function(idx){inp.addEventListener('input',function(){crit[idx].label=this.value})})(i);row.appendChild(inp);if(crit.length>1){var rm=document.createElement('button');rm.className='btn-remove';rm.textContent='×';(function(idx){rm.addEventListener('click',function(){crit.splice(idx,1);rebX()})})(i);row.appendChild(rm)}d.appendChild(row)})}
+      rebX();document.getElementById('xac').addEventListener('click',function(){crit.push({id:'c'+Date.now(),label:''});rebX()});
+      document.getElementById('xs').addEventListener('click',function(){var clean=crit.filter(function(c){return c.label.trim()});fd.config=Object.assign({},cfg,{profName:document.getElementById('xpn').value.trim()||cfg.profName,profEmail:document.getElementById('xpe').value.trim()||cfg.profEmail,courseName:document.getElementById('xcn').value.trim()||cfg.courseName,title:document.getElementById('xft').value.trim()||cfg.title,instructions:document.getElementById('xfi').value.trim(),criteria:clean.length?clean:DEFAULT_CRITERIA});saveForm(code,fd);var btn=document.getElementById('xs');btn.textContent='Guardado';btn.style.background='#333';setTimeout(function(){btn.textContent='Guardar cambios';btn.style.background='#111'},2000)});
+    }
+  }draw();
+}
+
+/* ═══ INIT ═══ */
+(function(){var c=getUrlParam('code');if(c){c=c.toUpperCase().trim();var f=loadForm(c);if(f){render('studentForm',{code:c,form:f});return}}render('home')})();
+</script>
+</body>
+</html>
