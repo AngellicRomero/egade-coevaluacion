@@ -136,7 +136,37 @@ function downloadCSV(res,crit,title){var a=document.createElement('a');a.href=UR
 
 /* ═══ EMAIL ═══ */
 function sendWebhook(payload,cb){if(!EMAIL_WEBHOOK||EMAIL_WEBHOOK==='PEGAR_URL_AQUI'){if(cb)cb(false,'webhook_not_configured');return}fetch(EMAIL_WEBHOOK,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)}).then(function(r){return r.json()}).then(function(d){if(d&&d.ok){if(cb)cb(true)}else{if(cb)cb(false,'send_error')}}).catch(function(){if(cb)cb(false,'network_error')})}
-function sendCredentialEmail(email,name,course,code,pwd,ts,cb){var subj='CoEval – Credenciales: '+course;var body='Hola '+name+',\n\nAquí están las credenciales de tu formulario de coevaluación:\n\nCódigo: '+code+'\nContraseña: '+pwd+'\nCurso: '+course+'\nCreado: '+fmtDate(ts)+'\n\nLink para alumnos:\n'+getStudentUrl(code)+'\n\n— CoEval';window.open('mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body));if(cb)cb(true)}
+function sendCredentialEmail(email,name,course,code,pwd,ts,cb){
+  var subj='[CoEval] Credenciales de tu formulario – '+course;
+  var sep='────────────────────────────';
+  var body=[
+    'Hola '+name+',',
+    '',
+    'A continuación se presentan las credenciales de acceso a tu formulario de coevaluación. Guarda este correo como respaldo.',
+    '',
+    sep,
+    '  DATOS DEL FORMULARIO',
+    sep,
+    '  Profesor  : '+name,
+    '  Curso     : '+course,
+    '  Código    : '+code,
+    '  Contraseña: '+pwd,
+    '  Creado    : '+fmtDate(ts),
+    sep,
+    '',
+    'Link de acceso para alumnos:',
+    getStudentUrl(code),
+    '',
+    'Ingresa al panel de resultados con tu código y contraseña.',
+    '',
+    '— CoEval | Plataforma de coevaluación entre pares',
+    '  Tecnológico de Monterrey – EGADE'
+  ].join('\n');
+  var a=document.createElement('a');
+  a.href='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  if(cb)cb(true);
+}
 function sendResultsEmail(email,name,course,code,csv,tF,tE,tP,cb){sendWebhook({type:'results',to:email,profName:name,courseName:course,code:code,csvContent:csv,totalForms:tF,totalEvals:tE,totalPeers:tP},cb)}
 
 /* ═══ STARS ═══ */
