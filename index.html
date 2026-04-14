@@ -24,6 +24,24 @@ textarea.inp{resize:vertical;min-height:48px}
 .btn-outline{padding:12px 24px;background:none;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn-outline:hover{border-color:#999;color:#222}
 #fixed-logo{position:fixed;top:12px;right:16px;z-index:998;opacity:1;transition:opacity .2s;pointer-events:none}#fixed-logo img{height:36px;display:block}#fixed-logo.hidden{opacity:0;pointer-events:none}
+#sup-widget{position:fixed;bottom:20px;left:20px;z-index:1000}
+#sup-btn{width:52px;height:52px;border-radius:50%;background:#111;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.25);transition:transform .2s}
+#sup-btn:hover{transform:scale(1.08)}
+#sup-panel{position:absolute;bottom:64px;left:0;background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.15);width:360px;max-width:calc(100vw - 40px);overflow:hidden;transition:opacity .2s,transform .2s}
+#sup-panel.hidden{display:none}
+.sup-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:16px 18px 12px;border-bottom:1px solid #f0f0f0}
+.sup-ttl{font-weight:700;font-size:13.5px;color:#111;line-height:1.35;flex:1}
+.sup-x{background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0;line-height:1;margin-left:8px}.sup-x:hover{color:#111}
+.sup-sub{font-size:13px;color:#666;padding:12px 18px 6px;margin:0}
+.sup-body{padding:0 12px 14px}
+.sup-card{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:#fff;border:1px solid #eee;border-radius:12px;margin-top:10px}
+.sup-av{width:48px;height:48px;min-width:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0;overflow:hidden;background:#555}
+.sup-av img{width:100%;height:100%;object-fit:cover}
+.sup-info{flex:1;min-width:0}
+.sup-name{font-weight:700;font-size:13px;color:#111;margin-bottom:2px}
+.sup-role{font-size:12px;color:#777;line-height:1.35;margin-bottom:3px}
+.sup-email{font-size:12px;color:#2563eb;text-decoration:none}.sup-email:hover{text-decoration:underline}
+.sup-mail{flex-shrink:0;color:#666;display:flex;align-items:center;margin-top:2px}
 .lang-toggle{position:fixed;top:14px;left:16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;z-index:999;transition:all .2s}.lang-toggle:hover{background:#111;color:#fff;border-color:#111}
 .btn-back{background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:20px;padding:0;transition:color .15s;display:inline-flex;align-items:center;gap:4px}
 .btn-back:hover{color:#555}
@@ -79,6 +97,35 @@ textarea.inp{resize:vertical;min-height:48px}
 </head>
 <body>
 <div id="fixed-logo" class="hidden"><img src="" alt="EGADE" id="fixed-logo-img"></div>
+<div id="sup-widget">
+  <div id="sup-panel" class="hidden">
+    <div class="sup-hdr">
+      <span class="sup-ttl" id="sup-ttl">Dirección de Desarrollo Académico EGADE</span>
+      <button class="sup-x" id="sup-close">×</button>
+    </div>
+    <p class="sup-sub" id="sup-sub">Para soporte o dudas sobre EGADE Loop:</p>
+    <div class="sup-body">
+      <div class="sup-card">
+        <div class="sup-av" style="background:#3a7d44" id="sup-av1">MN</div>
+        <div class="sup-info">
+          <div class="sup-name">Mariana Núñez Almanza</div>
+          <div class="sup-role" id="sup-role1">Directora de Desarrollo Académico EGADE</div>
+          <a href="mailto:mariananual@tec.mx" class="sup-email">mariananual@tec.mx</a>
+        </div>
+        <a href="mailto:mariananual@tec.mx" class="sup-mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg></a>
+      </div>
+      <div class="sup-card">
+        <div class="sup-av" style="background:#3b5fa0" id="sup-av2">SA</div>
+        <div class="sup-info">
+          <div class="sup-name" id="sup-name2">CC: Stephanie Angellic Romero Romero</div>
+          <div class="sup-role" id="sup-role2">Especialista en Prácticas de Enseñanza</div>
+          <a href="mailto:sa.romero@tec.mx" class="sup-email">sa.romero@tec.mx</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button id="sup-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg></button>
+</div>
 <div class="wrap" id="app"></div>
 <script>
 /* ═══ WEBHOOK ═══ */
@@ -238,7 +285,7 @@ function createStars(val,onChange){var w=document.createElement('div');w.classNa
 
 /* ═══ RENDER ═══ */
 var app=document.getElementById('app'),peers=[];
-function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);var fl=document.getElementById('fixed-logo'),fli=document.getElementById('fixed-logo-img');if(fl){if(scr==='langSelect'||scr==='home'){fl.classList.add('hidden')}else{if(fli&&!fli.src.startsWith('data'))fli.src=EGADE_LOGO;fl.classList.remove('hidden')}}({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
+function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);updateSupportLang();var fl=document.getElementById('fixed-logo'),fli=document.getElementById('fixed-logo-img');if(fl){if(scr==='langSelect'||scr==='home'){fl.classList.add('hidden')}else{if(fli&&!fli.src.startsWith('data'))fli.src=EGADE_LOGO;fl.classList.remove('hidden')}}({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
 
 /* ═══ LANG SELECT ═══ */
 function renderLangSelect(){
@@ -413,6 +460,19 @@ function renderProfDash(code){
     }
   }draw();
 }
+
+/* ═══ SUPPORT WIDGET ═══ */
+function updateSupportLang(){
+  var isEN=LANG==='en';
+  var el;
+  el=document.getElementById('sup-ttl');if(el)el.textContent=isEN?'EGADE Academic Development Office':'Dirección de Desarrollo Académico EGADE';
+  el=document.getElementById('sup-sub');if(el)el.textContent=isEN?'For support or questions about EGADE Loop:':'Para soporte o dudas sobre EGADE Loop:';
+  el=document.getElementById('sup-role1');if(el)el.textContent=isEN?'Academic Development Director EGADE':'Directora de Desarrollo Académico EGADE';
+  el=document.getElementById('sup-name2');if(el)el.textContent='CC: Stephanie Angellic Romero Romero';
+  el=document.getElementById('sup-role2');if(el)el.textContent=isEN?'Teaching Practices Specialist':'Especialista en Prácticas de Enseñanza';
+}
+document.getElementById('sup-btn').addEventListener('click',function(){var p=document.getElementById('sup-panel');p.classList.toggle('hidden');if(!p.classList.contains('hidden'))updateSupportLang()});
+document.getElementById('sup-close').addEventListener('click',function(){document.getElementById('sup-panel').classList.add('hidden')});
 
 /* ═══ INIT ═══ */
 (function(){var c=getUrlParam('code'),d=getUrlParam('d');history.replaceState(null,'',window.location.pathname);if(c){c=c.toUpperCase().trim();if(d&&!loadForm(c)){try{var cfg=JSON.parse(decodeURIComponent(atob(decodeURIComponent(d))));saveForm(c,{config:{title:cfg.t,courseName:cfg.c,profName:cfg.p,instructions:cfg.i,criteria:cfg.cr,profCode:''},responses:[],createdAt:Date.now()})}catch(ex){}}var f=loadForm(c);if(f){render('studentForm',{code:c,form:f});return}}render('langSelect');})();
