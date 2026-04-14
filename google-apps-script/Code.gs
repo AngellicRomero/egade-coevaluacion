@@ -70,6 +70,26 @@ function doGet(e) {
     }
   }
 
+  // ── GET: devuelve la URL del alumno guardada para un código ──────────────────
+  if (action === 'getStudentUrl') {
+    try {
+      var ss3    = SpreadsheetApp.openById(SPREADSHEET_ID);
+      var sheet3 = ss3.getSheetByName(SHEET_FORMS);
+      if (!sheet3) return ContentService.createTextOutput('notfound').setMimeType(ContentService.MimeType.TEXT);
+      var rows   = sheet3.getDataRange().getValues();
+      var code3  = (e.parameter.code || '').toUpperCase().trim();
+      for (var i = rows.length - 1; i >= 1; i--) {
+        if (String(rows[i][1]).toUpperCase().trim() === code3) {
+          var surl3 = rows[i][7];
+          return ContentService.createTextOutput(surl3 || 'notfound').setMimeType(ContentService.MimeType.TEXT);
+        }
+      }
+      return ContentService.createTextOutput('notfound').setMimeType(ContentService.MimeType.TEXT);
+    } catch(err3) {
+      return ContentService.createTextOutput('error:' + err3.message).setMimeType(ContentService.MimeType.TEXT);
+    }
+  }
+
   // Health check
   return ContentService.createTextOutput('CoEval OK — ' + new Date().toISOString())
     .setMimeType(ContentService.MimeType.TEXT);

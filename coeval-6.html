@@ -136,7 +136,8 @@ function saveForm(c,d){try{localStorage.setItem('coeval:'+c,JSON.stringify(d))}c
 function showE(id,m){var e=document.getElementById(id);if(e){e.textContent=m;e.classList.remove('hidden')}}
 function getBaseUrl(){return window.location.origin+window.location.pathname}
 function getStudentUrl(code){return getBaseUrl()+'?code='+code}
-function getQrImageUrl(code){return'https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=111111&data='+encodeURIComponent(getStudentUrl(code))}
+function getStudentUrlFull(code,cfg){try{var safe={t:cfg.title,c:cfg.courseName,p:cfg.profName,i:cfg.instructions,cr:cfg.criteria};var d=btoa(encodeURIComponent(JSON.stringify(safe)));return getBaseUrl()+'?code='+code+'&d='+encodeURIComponent(d)}catch(e){return getStudentUrl(code)}}
+function getQrImageUrl(surl){return'https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=111111&data='+encodeURIComponent(surl)}
 function getUrlParam(name){return new URLSearchParams(window.location.search).get(name)}
 function getDefaultCriteria(){return(T[LANG]&&T[LANG].defaultCriteria)||[{id:'c1',label:'Participación activa en el equipo'},{id:'c2',label:'Calidad de las aportaciones'},{id:'c3',label:'Cumplimiento de entregas a tiempo'},{id:'c4',label:'Comunicación y colaboración'},{id:'c5',label:'Responsabilidad individual'}]}
 
@@ -167,7 +168,7 @@ function sendWebhook(payload,cb){
     .then(function(){if(cb)cb(true)})
     .catch(function(){if(cb)cb(false,'network_error')});
 }
-function sendCredentialEmail(email,name,course,code,pwd,ts,cb){
+function sendCredentialEmail(email,name,course,code,pwd,ts,surl,cb){
   var isEN=LANG==='en';
   var subj=isEN?'[EGADE Loop] Your form credentials – '+course:'[EGADE Loop] Credenciales de tu formulario – '+course;
   var sep='────────────────────────────';
@@ -187,7 +188,7 @@ function sendCredentialEmail(email,name,course,code,pwd,ts,cb){
     sep,
     '',
     'Student access link:',
-    getStudentUrl(code),
+    surl,
     '',
     'Log in to the results panel with your code and password.',
     '',
@@ -209,7 +210,7 @@ function sendCredentialEmail(email,name,course,code,pwd,ts,cb){
     sep,
     '',
     'Link de acceso para alumnos:',
-    getStudentUrl(code),
+    surl,
     '',
     'Ingresa al panel de resultados con tu código y contraseña.',
     '',
@@ -254,7 +255,7 @@ function renderStudentCode(){
   document.getElementById('bk').addEventListener('click',function(){render('home')});var inp=document.getElementById('ci');inp.focus();
   inp.addEventListener('input',function(){this.value=this.value.toUpperCase();document.getElementById('ce').classList.add('hidden')});
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('cg').click()});
-  document.getElementById('cg').addEventListener('click',function(){var c=inp.value.trim().toUpperCase();if(c.length<4){showE('ce',t('errCode'));return}var f=loadForm(c);if(!f){showE('ce',t('errNotFound'));return}render('studentForm',{code:c,form:f})});
+  document.getElementById('cg').addEventListener('click',function(){var c=inp.value.trim().toUpperCase();if(c.length<4){showE('ce',t('errCode'));return}var f=loadForm(c);if(f){render('studentForm',{code:c,form:f});return}if(EMAIL_WEBHOOK&&EMAIL_WEBHOOK!=='PEGAR_URL_AQUI'){var btn=document.getElementById('cg');btn.disabled=true;btn.textContent=LANG==='en'?'Searching…':'Buscando…';var gasBase=EMAIL_WEBHOOK.split('?')[0];fetch(gasBase+'?action=getStudentUrl&code='+encodeURIComponent(c)).then(function(r){return r.text()}).then(function(txt){btn.disabled=false;btn.textContent=t('cont');if(txt&&txt.indexOf('http')===0){try{var urlObj=new URL(txt);var dp=urlObj.searchParams.get('d');if(dp){var cfgD=JSON.parse(decodeURIComponent(atob(decodeURIComponent(dp))));saveForm(c,{config:{title:cfgD.t,courseName:cfgD.c,profName:cfgD.p,instructions:cfgD.i,criteria:cfgD.cr,profCode:''},responses:[],createdAt:Date.now()});var f2=loadForm(c);if(f2){render('studentForm',{code:c,form:f2});return}}}catch(e2){}}showE('ce',t('errNotFound'))}).catch(function(){btn.disabled=false;btn.textContent=t('cont');showE('ce',t('errNotFound'))})}else{showE('ce',t('errNotFound'))}});
 }
 
 /* ═══ STUDENT FORM ═══ */
@@ -322,12 +323,12 @@ function renderProfCreate(){
   document.getElementById('bk').addEventListener('click',function(){render('profMenu')});
   function rebC(){var d=document.getElementById('cc');d.innerHTML='';criteria.forEach(function(c,i){var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;align-items:center;margin-bottom:8px';row.innerHTML='<span style="font-size:12px;color:#ccc;width:20px;text-align:center">'+(i+1)+'</span>';var inp=document.createElement('input');inp.className='inp';inp.style.flex='1';inp.value=c.label;inp.placeholder='Criterio…';(function(idx){inp.addEventListener('input',function(){criteria[idx].label=this.value})})(i);row.appendChild(inp);if(criteria.length>1){var rm=document.createElement('button');rm.className='btn-remove';rm.textContent='×';(function(idx){rm.addEventListener('click',function(){criteria.splice(idx,1);rebC()})})(i);row.appendChild(rm)}d.appendChild(row)})}
   rebC();document.getElementById('ac').addEventListener('click',function(){criteria.push({id:'c'+Date.now(),label:''});rebC()});
-  document.getElementById('cf').addEventListener('click',function(){var pn=document.getElementById('pn').value.trim(),pe=document.getElementById('pe').value.trim(),cn=document.getElementById('cn').value.trim();document.getElementById('pn').classList.toggle('err',!pn);document.getElementById('pe').classList.toggle('err',!pe);document.getElementById('cn').classList.toggle('err',!cn);if(!pn||!pe||!cn){showE('cfe','Completa los campos obligatorios');return}if(!pe.endsWith('@tec.mx')){showE('cfe','El correo debe ser institucional (@tec.mx)');return}var clean=criteria.filter(function(c){return c.label.trim()});if(!clean.length){showE('cfe','Agrega al menos un criterio');return}var code=genCode(),pwd=genPassword(),now=Date.now();var form={config:{title:document.getElementById('ft').value.trim()||t('defaultTitle'),courseName:cn,profName:pn,profEmail:pe,instructions:document.getElementById('fi').value.trim(),criteria:clean,profCode:pwd},responses:[],createdAt:now};saveForm(code,form);sendWebhook({type:'form_created',code:code,title:form.config.title,courseName:cn,profName:pn,profEmail:pe,password:pwd,criteria:clean,studentUrl:getStudentUrl(code),createdAt:now});render('profCreated',{code:code,form:form,password:pwd})});
+  document.getElementById('cf').addEventListener('click',function(){var pn=document.getElementById('pn').value.trim(),pe=document.getElementById('pe').value.trim(),cn=document.getElementById('cn').value.trim();document.getElementById('pn').classList.toggle('err',!pn);document.getElementById('pe').classList.toggle('err',!pe);document.getElementById('cn').classList.toggle('err',!cn);if(!pn||!pe||!cn){showE('cfe','Completa los campos obligatorios');return}if(!pe.endsWith('@tec.mx')){showE('cfe','El correo debe ser institucional (@tec.mx)');return}var clean=criteria.filter(function(c){return c.label.trim()});if(!clean.length){showE('cfe','Agrega al menos un criterio');return}var code=genCode(),pwd=genPassword(),now=Date.now();var form={config:{title:document.getElementById('ft').value.trim()||t('defaultTitle'),courseName:cn,profName:pn,profEmail:pe,instructions:document.getElementById('fi').value.trim(),criteria:clean,profCode:pwd},responses:[],createdAt:now};saveForm(code,form);sendWebhook({type:'form_created',code:code,title:form.config.title,courseName:cn,profName:pn,profEmail:pe,password:pwd,criteria:clean,studentUrl:getStudentUrlFull(code,form.config),createdAt:now});render('profCreated',{code:code,form:form,password:pwd})});
 }
 
 /* ═══ PROF CREATED ═══ */
 function renderProfCreated(code,form,pwd){
-  var cfg=form.config,qr=getQrImageUrl(code),surl=getStudentUrl(code);
+  var cfg=form.config,surl=getStudentUrlFull(code,cfg),qr=getQrImageUrl(surl);
   app.innerHTML='<div class="text-center"><div class="success-circle" style="background:#f0f0f0;color:#111">'+ico('check','ico-xl')+'</div><h2 class="h2" style="font-size:24px;margin-bottom:4px">'+t('formCreated')+'</h2><p style="color:#999;font-size:14px;margin-bottom:8px">'+esc(cfg.courseName)+'</p></div>'
     +'<div class="email-banner" id="email-status" style="background:#f0f0f0;border-color:#ddd;color:#333">'+ico('checkCircle','ico-sm')+' <span>'+t('credsSent')+' <strong>'+esc(cfg.profEmail)+'</strong></span></div>'
     +'<div class="credential-box"><p style="font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px">'+ico('lock','ico-sm')+' '+t('yourCreds')+'</p>'
@@ -344,7 +345,7 @@ function renderProfCreated(code,form,pwd){
     +'<button class="btn-back" id="nw" style="display:block;margin:16px auto 0;text-align:center">'+ico('plus','ico-sm')+' '+t('createAnother')+'</button>';
   document.getElementById('cp').addEventListener('click',function(){navigator.clipboard.writeText(t('copyEvalTxt')+(cfg.courseName||cfg.title)+'\n'+t('copyProfTxt')+cfg.profName+'\n'+t('copyLinkTxt')+surl+'\n'+t('copyCodeTxt')+code).then(function(){document.getElementById('cp').innerHTML=ico('check','ico-sm')+' '+t('copied')})});
   document.getElementById('cl').addEventListener('click',function(){navigator.clipboard.writeText(surl).then(function(){document.getElementById('cl').innerHTML=ico('check','ico-sm')+' Copiado'})});
-  document.getElementById('re').addEventListener('click',function(){var b=this;b.innerHTML=ico('mail','ico-sm')+' '+t('sendingTxt');b.disabled=true;sendCredentialEmail(cfg.profEmail,cfg.profName,cfg.courseName,code,pwd,form.createdAt,function(ok){if(ok){b.innerHTML=ico('check','ico-sm')+' '+t('mailOpened');b.style.color='#333';setTimeout(function(){b.innerHTML=ico('mail','ico-sm')+' '+t('resend');b.disabled=false;b.style.color=''},3000)}else{b.innerHTML=ico('alertCircle','ico-sm')+' Error';b.disabled=false}})});
+  document.getElementById('re').addEventListener('click',function(){var b=this;b.innerHTML=ico('mail','ico-sm')+' '+t('sendingTxt');b.disabled=true;sendCredentialEmail(cfg.profEmail,cfg.profName,cfg.courseName,code,pwd,form.createdAt,surl,function(ok){if(ok){b.innerHTML=ico('check','ico-sm')+' '+t('mailOpened');b.style.color='#333';setTimeout(function(){b.innerHTML=ico('mail','ico-sm')+' '+t('resend');b.disabled=false;b.style.color=''},3000)}else{b.innerHTML=ico('alertCircle','ico-sm')+' Error';b.disabled=false}})});
   document.getElementById('go').addEventListener('click',function(){render('profDash',{code:code})});
   document.getElementById('nw').addEventListener('click',function(){render('profCreate')});
 }
@@ -353,7 +354,7 @@ function renderProfCreated(code,form,pwd){
 function renderProfDash(code){
   var fd=loadForm(code);if(!fd){render('profMenu');return}var tab='share',fg='';
   function draw(){
-    fd=loadForm(code)||fd;var cfg=fd.config,res=fd.responses||[],qr=getQrImageUrl(code),surl=getStudentUrl(code);
+    fd=loadForm(code)||fd;var cfg=fd.config,res=fd.responses||[],surl=getStudentUrlFull(code,cfg),qr=getQrImageUrl(surl);
     var fil=fg?res.filter(function(r){return r.groupName===fg}):res;var grps=[];res.forEach(function(r){if(grps.indexOf(r.groupName)<0)grps.push(r.groupName)});grps.sort();
     var tot=fil.reduce(function(s,r){return s+r.evaluations.length},0);var agg={};fil.forEach(function(r){r.evaluations.forEach(function(ev){var k=ev.peerName.toLowerCase().trim();if(!agg[k])agg[k]={name:ev.peerName,group:r.groupName,scores:{},count:0,comments:[]};agg[k].count++;cfg.criteria.forEach(function(c){if(ev.scores[c.id])agg[k].scores[c.id]=(agg[k].scores[c.id]||0)+ev.scores[c.id]});if(ev.comment)agg[k].comments.push({from:r.evaluatorName,text:ev.comment})})});var aggKeys=Object.keys(agg);
 
@@ -398,7 +399,7 @@ function renderProfDash(code){
 }
 
 /* ═══ INIT ═══ */
-(function(){var c=getUrlParam('code');history.replaceState(null,'',window.location.pathname);if(c){c=c.toUpperCase().trim();var f=loadForm(c);if(f){render('studentForm',{code:c,form:f});return}}render('langSelect');})();
+(function(){var c=getUrlParam('code'),d=getUrlParam('d');history.replaceState(null,'',window.location.pathname);if(c){c=c.toUpperCase().trim();if(d&&!loadForm(c)){try{var cfg=JSON.parse(decodeURIComponent(atob(decodeURIComponent(d))));saveForm(c,{config:{title:cfg.t,courseName:cfg.c,profName:cfg.p,instructions:cfg.i,criteria:cfg.cr,profCode:''},responses:[],createdAt:Date.now()})}catch(ex){}}var f=loadForm(c);if(f){render('studentForm',{code:c,form:f});return}}render('langSelect');})();
 </script>
 </body>
 </html>
