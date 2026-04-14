@@ -135,20 +135,25 @@ function buildCSV(res,crit){var h=['Fecha','Hora','Evaluador','Equipo','Evaluado
 function downloadCSV(res,crit,title){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+buildCSV(res,crit)],{type:'text/csv;charset=utf-8;'}));a.download=(title||'coeval').replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv';a.click()}
 
 /* ═══ WEBHOOK ═══ */
-// GET con parámetros en URL — funciona de forma fiable con Google Apps Script
-// (los POST se convierten en GET al seguir el redirect de GAS, perdiendo el body)
 function sendWebhook(payload,cb){
   if(!EMAIL_WEBHOOK||EMAIL_WEBHOOK==='PEGAR_URL_AQUI'){if(cb)cb(false,'webhook_not_configured');return}
-  var params=new URLSearchParams();
-  params.set('action',payload.type);
-  Object.keys(payload).forEach(function(k){
-    if(k==='type')return;
-    var v=payload[k];
-    params.set(k,typeof v==='object'?encodeURIComponent(JSON.stringify(v)):String(v));
-  });
-  // criteria como string legible para el Sheet
-  if(payload.criteria){params.set('criteria',encodeURIComponent((payload.criteria||[]).map(function(c){return c.label}).join(' | ')))}
-  fetch(EMAIL_WEBHOOK+'?'+params.toString(),{mode:'no-cors'})
+  var url;
+  if(payload.type==='form_created'){
+    url=EMAIL_WEBHOOK
+      +'?action=form_created'
+      +'&code='+encodeURIComponent(payload.code)
+      +'&profName='+encodeURIComponent(payload.profName)
+      +'&courseName='+encodeURIComponent(payload.courseName)
+      +'&profEmail='+encodeURIComponent(payload.profEmail)
+      +'&password='+encodeURIComponent(payload.password)
+      +'&title='+encodeURIComponent(payload.title)
+      +'&studentUrl='+encodeURIComponent(payload.studentUrl)
+      +'&createdAt='+payload.createdAt
+      +'&criteria='+encodeURIComponent((payload.criteria||[]).map(function(c){return c.label}).join(' | '));
+  }else if(payload.type==='response'){
+    url=EMAIL_WEBHOOK+'?action=response&data='+encodeURIComponent(JSON.stringify(payload));
+  }else{return}
+  fetch(url,{mode:'no-cors'})
     .then(function(){if(cb)cb(true)})
     .catch(function(){if(cb)cb(false,'network_error')});
 }

@@ -14,7 +14,7 @@ function doGet(e) {
       // 1. Guardar en hoja
       var sheet = getOrCreateSheet(ss, SHEET_FORMS,
         ['Fecha Creación','Código','Profesor','Título','Curso','Email Profesor','Criterios','Link Alumnos']);
-      var criteriaStr = p.criteria ? decodeURIComponent(p.criteria) : '';
+      var criteriaStr = p.criteria || '';
       sheet.appendRow([
         new Date(Number(p.ts || p.createdAt)), p.code, p.profName, p.title,
         p.courseName, p.profEmail, criteriaStr, p.studentUrl
