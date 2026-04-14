@@ -135,7 +135,7 @@ function buildCSV(res,crit){var h=['Fecha','Hora','Evaluador','Equipo','Evaluado
 function downloadCSV(res,crit,title){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+buildCSV(res,crit)],{type:'text/csv;charset=utf-8;'}));a.download=(title||'coeval').replace(/\s+/g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv';a.click()}
 
 /* ═══ EMAIL ═══ */
-function sendWebhook(payload,cb){if(!EMAIL_WEBHOOK||EMAIL_WEBHOOK==='PEGAR_URL_AQUI'){if(cb)cb(false,'webhook_not_configured');return}fetch(EMAIL_WEBHOOK,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)}).then(function(r){return r.json()}).then(function(d){if(d&&d.ok){if(cb)cb(true)}else{if(cb)cb(false,'send_error')}}).catch(function(){if(cb)cb(false,'network_error')})}
+function sendWebhook(payload,cb){if(!EMAIL_WEBHOOK||EMAIL_WEBHOOK==='PEGAR_URL_AQUI'){if(cb)cb(false,'webhook_not_configured');return}fetch(EMAIL_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)}).then(function(){if(cb)cb(true)}).catch(function(){if(cb)cb(false,'network_error')})}
 function sendCredentialEmail(email,name,course,code,pwd,ts,cb){
   var subj='[CoEval] Credenciales de tu formulario – '+course;
   var sep='────────────────────────────';
