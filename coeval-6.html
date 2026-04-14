@@ -173,7 +173,8 @@ function sendCredentialEmail(email,name,course,code,pwd,ts,surl,cb){
   var isEN=LANG==='en';
   var subj=isEN?'[EGADE Loop] Your form credentials – '+course:'[EGADE Loop] Credenciales de tu formulario – '+course;
   var sep='────────────────────────────';
-  var body=isEN?[
+  var divider='════════════════════════════';
+  var blockEN=[
     'Hi '+name+',',
     '',
     'Below are the access credentials for your co-evaluation form. Save this email as a backup.',
@@ -195,7 +196,8 @@ function sendCredentialEmail(email,name,course,code,pwd,ts,surl,cb){
     '',
     '— EGADE Loop | Peer evaluation platform',
     '  Tecnológico de Monterrey – EGADE'
-  ].join('\n'):[
+  ].join('\n');
+  var blockES=[
     'Hola '+name+',',
     '',
     'A continuación se presentan las credenciales de acceso a tu formulario de coevaluación. Guarda este correo como respaldo.',
@@ -218,6 +220,9 @@ function sendCredentialEmail(email,name,course,code,pwd,ts,surl,cb){
     '— EGADE Loop | Plataforma de evaluación entre pares',
     '  Tecnológico de Monterrey – EGADE'
   ].join('\n');
+  var body=isEN
+    ? blockEN+'\n\n'+divider+'\n\n'+blockES
+    : blockES+'\n\n'+divider+'\n\n'+blockEN;
   var a=document.createElement('a');
   a.href='mailto:'+encodeURIComponent(email)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
   document.body.appendChild(a);a.click();document.body.removeChild(a);
