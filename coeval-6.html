@@ -23,7 +23,8 @@ textarea.inp{resize:vertical;min-height:48px}
 .btn-black:hover{opacity:.85}.btn-black:disabled{opacity:.35;cursor:default}.btn-black.full{width:100%}
 .btn-outline{padding:12px 24px;background:none;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn-outline:hover{border-color:#999;color:#222}
-.lang-toggle{position:fixed;top:14px;right:16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;z-index:999;transition:all .2s}.lang-toggle:hover{background:#111;color:#fff;border-color:#111}
+#fixed-logo{position:fixed;top:12px;right:16px;z-index:998;opacity:1;transition:opacity .2s;pointer-events:none}#fixed-logo img{height:36px;display:block}#fixed-logo.hidden{opacity:0;pointer-events:none}
+.lang-toggle{position:fixed;top:14px;left:16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;z-index:999;transition:all .2s}.lang-toggle:hover{background:#111;color:#fff;border-color:#111}
 .btn-back{background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:20px;padding:0;transition:color .15s;display:inline-flex;align-items:center;gap:4px}
 .btn-back:hover{color:#555}
 .btn-dashed{width:100%;padding:11px;background:none;border:1.5px dashed #ddd;border-radius:8px;color:#aaa;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;margin-bottom:20px}
@@ -77,6 +78,7 @@ textarea.inp{resize:vertical;min-height:48px}
 </style>
 </head>
 <body>
+<div id="fixed-logo" class="hidden"><img src="" alt="EGADE" id="fixed-logo-img"></div>
 <div class="wrap" id="app"></div>
 <script>
 /* ═══ WEBHOOK ═══ */
@@ -236,7 +238,7 @@ function createStars(val,onChange){var w=document.createElement('div');w.classNa
 
 /* ═══ RENDER ═══ */
 var app=document.getElementById('app'),peers=[];
-function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
+function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);var fl=document.getElementById('fixed-logo'),fli=document.getElementById('fixed-logo-img');if(fl){if(scr==='langSelect'){fl.classList.add('hidden')}else{if(fli&&!fli.src.startsWith('data'))fli.src=EGADE_LOGO;fl.classList.remove('hidden')}}({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
 
 /* ═══ LANG SELECT ═══ */
 function renderLangSelect(){
