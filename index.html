@@ -23,7 +23,7 @@ textarea.inp{resize:vertical;min-height:48px}
 .btn-black:hover{opacity:.85}.btn-black:disabled{opacity:.35;cursor:default}.btn-black.full{width:100%}
 .btn-outline{padding:12px 24px;background:none;border:1.5px solid #ddd;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn-outline:hover{border-color:#999;color:#222}
-.lang-toggle{position:fixed;top:14px;right:16px;background:#f5f5f5;border:1.5px solid #e0e0e0;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;transition:all .2s;z-index:999}.lang-toggle:hover{background:#111;color:#fff;border-color:#111}
+.lang-toggle{position:fixed;top:14px;right:16px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;color:#555;z-index:999;transition:all .2s}.lang-toggle:hover{background:#111;color:#fff;border-color:#111}
 .btn-back{background:none;border:none;color:#aaa;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;margin-bottom:20px;padding:0;transition:color .15s;display:inline-flex;align-items:center;gap:4px}
 .btn-back:hover{color:#555}
 .btn-dashed{width:100%;padding:11px;background:none;border:1.5px dashed #ddd;border-radius:8px;color:#aaa;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;margin-bottom:20px}
@@ -84,104 +84,8 @@ var EMAIL_WEBHOOK='https://script.google.com/macros/s/AKfycbyaJPdSxSThIiWKJZ3i6G
 /* ═══ LANGUAGE ═══ */
 var LANG=localStorage.getItem('egade_lang')||'';
 var T={
-  es:{
-    appName:'EGADE Loop',appSub:'Plataforma de evaluación entre pares',
-    isStudent:'Soy Alumno',studentSub:'Tengo un código para evaluar',
-    isProf:'Soy Profesor',profSub:'Crear o administrar formularios',
-    back:'← Volver',cont:'Continuar',home:'Inicio',
-    enterCode:'Ingresa tu código',codeHint:'Tu profesor te compartió un código de 6 caracteres.',codePh:'CÓDIGO',
-    errCode:'Ingresa el código',errNotFound:'No se encontró ese formulario',errPass:'Contraseña incorrecta',
-    yourName:'Tu nombre completo *',namePh:'Nombre completo',
-    team:'Equipo / Grupo *',teamPh:'Ej: Equipo 3',
-    addPeer:'+ Agregar otro compañero',errComplete:'Completa todos los campos obligatorios y calificaciones.',
-    submitEval:'Enviar evaluación',peerPh:'Nombre del compañero',
-    commentLabel:'Comentarios (opcional)',commentPh:'Retroalimentación constructiva…',
-    successTitle:'Evaluación registrada',successMsg:'Tus respuestas se guardaron correctamente.',
-    evalAnother:'Evaluar otro compañero',
-    profPanel:'Panel del Profesor',createNew:'Crear nuevo formulario',
-    createNewSub:'Recibe código y contraseña por correo',
-    orOpen:'— O ABRE UNO EXISTENTE —',formCode:'Código del formulario',
-    passLabel:'Contraseña',passHint:'Revisa tu correo de credenciales',openForm:'Abrir formulario',
-    createForm:'Crear formulario',profData:'Datos del profesor',
-    fullName:'Nombre completo *',nameProfPh:'Ej: Dra. María García López',
-    instEmail:'Correo institucional *',emailPh:'nombre@tec.mx',
-    emailHint:'Recibirás código y contraseña en tu correo @tec.mx',
-    courseLabel:'Nombre del curso *',coursePh:'Ej: Mercadotecnia Digital — Grupo 301',
-    formTitleLabel:'Título del formulario',defaultTitle:'Coevaluación de Equipo',
-    instrLabel:'Instrucciones para alumnos',
-    defaultInstr:'Evalúa a cada uno de tus compañeros de equipo en una escala del 1 al 5 para cada criterio. Sé honesto(a) y constructivo(a).',
-    criteriaLabel:'Criterios de evaluación',addCrit:'Agregar criterio',
-    createAndSend:'Crear formulario y enviar credenciales',
-    errRequired:'Completa los campos obligatorios',errEmail:'El correo debe ser institucional (@tec.mx)',errCrit:'Agrega al menos un criterio',
-    critPh:'Criterio…',formCreated:'Formulario creado',credsSent:'Credenciales enviadas automáticamente a',
-    yourCreds:'Tus credenciales',codeLabel:'Código',passLabelB:'Contraseña',profLabel:'Profesor',
-    courseLabel2:'Curso',createdLabel:'Creado',qrTitle:'QR para alumnos',
-    qrSub:'Al escanearlo, abre directamente el formulario',
-    copyText:'Copiar texto',dlQR:'Descargar QR',copyLink:'Copiar link directo',
-    resend:'Reenviar correo de credenciales',goDash:'Ir al panel de resultados',createAnother:'Crear otro formulario',
-    copied:t('copied'),sending:t('sending'),emailOpened:'Correo abierto',
-    tabShare:'Compartir',tabResults:'Resultados',tabConfig:'Configurar',
-    fLabel:'Formularios',eLabel:'Evaluaciones',evLabel:'Evaluados',createdOn:'Creado:',
-    sendResults:'Enviar resultados por correo',recipEmail:'Correo del destinatario',
-    sendBtn:'Enviar',noResults:'No hay resultados para enviar.',dlExcel:'Descargar resultados en Excel',
-    refreshBtn:'Actualizar',deleteBtn:'Eliminar',allLabel:t('allLabel'),summaryLabel:t('summaryLabel'),
-    detailLabel:t('detailLabel'),noResp:'Sin respuestas aún.',errValidEmail:t('errValidEmail'),
-    sendingResults:t('sendingResults'),resultsSent:'Resultados enviados a',
-    webhookErr:t('webhookErr'),sendErr:t('sendErr'),
-    confirmDel:t('confirmDel'),cancelBtn:t('cancelBtn'),
-    nameLabel:'Nombre',instrConfigLabel:'Instrucciones',criteriaConfigLabel:'Criterios',
-    saveBtn:'Guardar cambios',savedMsg:t('savedMsg'),profLabelDash:'Panel profesor',
-    langBtn:'EN',
-  },
-  en:{
-    appName:'EGADE Loop',appSub:'Peer evaluation platform',
-    isStudent:"I'm a Student",studentSub:'I have a code to evaluate',
-    isProf:"I'm a Professor",profSub:'Create or manage forms',
-    back:'← Back',cont:'Continue',home:'Home',
-    enterCode:'Enter your code',codeHint:'Your professor shared a 6-character code with you.',codePh:'CODE',
-    errCode:'Enter the code',errNotFound:'Form not found',errPass:'Incorrect password',
-    yourName:'Your full name *',namePh:'Full name',
-    team:'Team / Group *',teamPh:'e.g., Team 3',
-    addPeer:'+ Add another peer',errComplete:'Please complete all required fields and ratings.',
-    submitEval:'Submit evaluation',peerPh:"Peer's name",
-    commentLabel:'Comments (optional)',commentPh:'Constructive feedback…',
-    successTitle:'Evaluation submitted',successMsg:'Your responses have been saved correctly.',
-    evalAnother:'Evaluate another peer',
-    profPanel:'Professor Panel',createNew:'Create new form',
-    createNewSub:'Receive code and password by email',
-    orOpen:'— OR OPEN AN EXISTING ONE —',formCode:'Form code',
-    passLabel:'Password',passHint:'Check your credentials email',openForm:'Open form',
-    createForm:'Create form',profData:"Professor's information",
-    fullName:'Full name *',nameProfPh:'e.g., Dr. Maria García López',
-    instEmail:'Institutional email *',emailPh:'name@tec.mx',
-    emailHint:'You will receive code and password at your @tec.mx email',
-    courseLabel:'Course name *',coursePh:'e.g., Digital Marketing — Group 301',
-    formTitleLabel:'Form title',defaultTitle:'Team Co-evaluation',
-    instrLabel:'Instructions for students',
-    defaultInstr:'Evaluate each of your team members on a scale of 1 to 5 for each criterion. Be honest and constructive.',
-    criteriaLabel:'Evaluation criteria',addCrit:'Add criterion',
-    createAndSend:'Create form and send credentials',
-    errRequired:'Please complete all required fields',errEmail:'Email must be institutional (@tec.mx)',errCrit:'Add at least one criterion',
-    critPh:'Criterion…',formCreated:'Form created',credsSent:'Credentials automatically sent to',
-    yourCreds:'Your credentials',codeLabel:'Code',passLabelB:'Password',profLabel:'Professor',
-    courseLabel2:'Course',createdLabel:'Created',qrTitle:'QR for students',
-    qrSub:'When scanned, it opens the form directly',
-    copyText:'Copy text',dlQR:'Download QR',copyLink:'Copy direct link',
-    resend:'Resend credentials email',goDash:'Go to results panel',createAnother:'Create another form',
-    copied:'Copied ✓',sending:'Sending…',emailOpened:'Email opened',
-    tabShare:'Share',tabResults:'Results',tabConfig:'Settings',
-    fLabel:'Forms',eLabel:'Evaluations',evLabel:'Evaluated',createdOn:'Created:',
-    sendResults:'Send results by email',recipEmail:"Recipient's email",
-    sendBtn:'Send',noResults:'No results to send.',dlExcel:'Download results as Excel',
-    refreshBtn:'Refresh',deleteBtn:'Delete',allLabel:'All',summaryLabel:'Summary by evaluated',
-    detailLabel:'Detail',noResp:'No responses yet.',errValidEmail:'Enter a valid email',
-    sendingResults:'Sending results…',resultsSent:'Results sent to',
-    webhookErr:'Webhook not configured.',sendErr:'Error sending.',
-    confirmDel:'Delete all responses?',cancelBtn:'Cancel',
-    nameLabel:'Name',instrConfigLabel:'Instructions',criteriaConfigLabel:'Criteria',
-    saveBtn:'Save changes',savedMsg:'Saved ✓',profLabelDash:'Professor Panel',
-    langBtn:'ES',
-  }
+  es:{appName:'EGADE Loop',appSub:'Plataforma de evaluación entre pares',isStudent:'Soy Alumno',studentSub:'Tengo un código para evaluar',isProf:'Soy Profesor',profSub:'Crear o administrar formularios',back:'Volver',cont:'Continuar',home:'Inicio',enterCode:'Ingresa tu código',codeHint:'Tu profesor te compartió un código de 6 caracteres.',codePh:'CÓDIGO',errCode:'Ingresa el código',errNotFound:'No se encontró ese formulario',errPass:'Contraseña incorrecta',yourName:'Tu nombre completo *',namePh:'Nombre completo',team:'Equipo / Grupo *',teamPh:'Ej: Equipo 3',addPeer:'Agregar otro compañero',errComplete:'Completa todos los campos obligatorios y calificaciones.',submitEval:'Enviar evaluación',peerPh:'Nombre del compañero',commentLabel:'Comentarios (opcional)',commentPh:'Retroalimentación constructiva…',successTitle:'Evaluación registrada',successMsg:'Tus respuestas se guardaron correctamente.',evalAnother:'Evaluar otro compañero',profPanel:'Panel del Profesor',createNew:'Crear nuevo formulario',createNewSub:'Recibe código y contraseña por correo',orOpen:'— O ABRE UNO EXISTENTE —',formCode:'Código del formulario',passLabel:'Contraseña',passHint:'Revisa tu correo de credenciales',openForm:'Abrir formulario',createForm:'Crear formulario',profData:'Datos del profesor',fullName:'Nombre completo *',nameProfPh:'Ej: Dra. María García López',instEmail:'Correo institucional *',emailPh:'nombre@tec.mx',emailHint:'Recibirás código y contraseña en tu correo @tec.mx',courseLabel:'Nombre del curso *',coursePh:'Ej: Mercadotecnia Digital — Grupo 301',formTitleLabel:'Título del formulario',defaultTitle:'Coevaluación de Equipo',instrLabel:'Instrucciones para alumnos',defaultInstr:'Evalúa a cada uno de tus compañeros de equipo en una escala del 1 al 5 para cada criterio.',criteriaLabel:'Criterios de evaluación',addCrit:'Agregar criterio',createAndSend:'Crear formulario y enviar credenciales',errRequired:'Completa los campos obligatorios',errEmail:'El correo debe ser institucional (@tec.mx)',errCrit:'Agrega al menos un criterio',critPh:'Criterio…',formCreated:'Formulario creado',credsSent:'Credenciales enviadas automáticamente a',yourCreds:'Tus credenciales',codeLabel:'Código',profLabel:'Profesor',courseLabel2:'Curso',createdLabel:'Creado',qrTitle:'QR para alumnos',qrSub:'Al escanearlo, abre directamente el formulario',copyText:'Copiar texto',dlQR:'Descargar QR',copyLink:'Copiar link directo',resend:'Reenviar correo de credenciales',goDash:'Ir al panel de resultados',createAnother:'Crear otro formulario',copied:'Copiado ✓',sendingTxt:'Enviando…',tabShare:'Compartir',tabResults:'Resultados',tabConfig:'Configurar',fLabel:'Formularios',eLabel:'Evaluaciones',evLabel:'Evaluados',createdOn:'Creado:',sendResults:'Enviar resultados por correo',recipEmail:'Correo del destinatario',sendBtn:'Enviar',noResultsTxt:'No hay resultados para enviar.',dlExcel:'Descargar resultados en Excel',refreshBtn:'Actualizar',deleteBtn:'Eliminar',allLbl:'Todos',summaryLbl:'Resumen por evaluado',detailLbl:'Detalle',noResp:'Sin respuestas aún.',errValidEmail:'Ingresa un correo válido',sendingResults:'Enviando resultados…',resultsSent:'Resultados enviados a ',webhookErr:'Webhook no configurado.',sendErr:'Error al enviar.',confirmDel:'¿Eliminar todas las respuestas?',cancelBtn:'Cancelar',saveBtn:'Guardar cambios',savedMsg:'Guardado ✓',profLabelDash:'Panel profesor',langBtn:'EN'},
+  en:{appName:'EGADE Loop',appSub:'Peer evaluation platform',isStudent:"I'm a Student",studentSub:'I have a code to evaluate',isProf:"I'm a Professor",profSub:'Create or manage forms',back:'Back',cont:'Continue',home:'Home',enterCode:'Enter your code',codeHint:'Your professor shared a 6-character code with you.',codePh:'CODE',errCode:'Enter the code',errNotFound:'Form not found',errPass:'Incorrect password',yourName:'Your full name *',namePh:'Full name',team:'Team / Group *',teamPh:'e.g., Team 3',addPeer:'Add another peer',errComplete:'Please complete all required fields and ratings.',submitEval:'Submit evaluation',peerPh:"Peer's name",commentLabel:'Comments (optional)',commentPh:'Constructive feedback…',successTitle:'Evaluation submitted',successMsg:'Your responses have been saved correctly.',evalAnother:'Evaluate another peer',profPanel:'Professor Panel',createNew:'Create new form',createNewSub:'Receive code and password by email',orOpen:'— OR OPEN AN EXISTING ONE —',formCode:'Form code',passLabel:'Password',passHint:'Check your credentials email',openForm:'Open form',createForm:'Create form',profData:"Professor's information",fullName:'Full name *',nameProfPh:'e.g., Dr. Garcia Lopez',instEmail:'Institutional email *',emailPh:'name@tec.mx',emailHint:'You will receive code and password at your @tec.mx email',courseLabel:'Course name *',coursePh:'e.g., Digital Marketing — Group 301',formTitleLabel:'Form title',defaultTitle:'Team Co-evaluation',instrLabel:'Instructions for students',defaultInstr:'Evaluate each team member on a scale of 1 to 5 for each criterion. Be honest and constructive.',criteriaLabel:'Evaluation criteria',addCrit:'Add criterion',createAndSend:'Create form and send credentials',errRequired:'Please complete all required fields',errEmail:'Email must be institutional (@tec.mx)',errCrit:'Add at least one criterion',critPh:'Criterion…',formCreated:'Form created',credsSent:'Credentials automatically sent to',yourCreds:'Your credentials',codeLabel:'Code',profLabel:'Professor',courseLabel2:'Course',createdLabel:'Created',qrTitle:'QR for students',qrSub:'When scanned, it opens the form directly',copyText:'Copy text',dlQR:'Download QR',copyLink:'Copy direct link',resend:'Resend credentials email',goDash:'Go to results panel',createAnother:'Create another form',copied:'Copied ✓',sendingTxt:'Sending…',tabShare:'Share',tabResults:'Results',tabConfig:'Settings',fLabel:'Forms',eLabel:'Evaluations',evLabel:'Evaluated',createdOn:'Created:',sendResults:'Send results by email',recipEmail:"Recipient's email",sendBtn:'Send',noResultsTxt:'No results to send.',dlExcel:'Download results as Excel',refreshBtn:'Refresh',deleteBtn:'Delete',allLbl:'All',summaryLbl:'Summary by evaluated',detailLbl:'Detail',noResp:'No responses yet.',errValidEmail:'Enter a valid email',sendingResults:'Sending results…',resultsSent:'Results sent to ',webhookErr:'Webhook not configured.',sendErr:'Error sending.',confirmDel:'Delete all responses?',cancelBtn:'Cancel',saveBtn:'Save changes',savedMsg:'Saved ✓',profLabelDash:'Professor Panel',langBtn:'ES'}
 };
 function t(k){return(T[LANG]&&T[LANG][k])||k}
 
@@ -303,16 +207,9 @@ function createStars(val,onChange){var w=document.createElement('div');w.classNa
 var app=document.getElementById('app'),peers=[];
 function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
 
-
 /* ═══ LANG SELECT ═══ */
 function renderLangSelect(){
-  app.innerHTML='<div class="text-center" style="padding-top:80px"><div style="margin-bottom:40px"><img src="'+EGADE_LOGO+'" alt="EGADE Business School" style="height:120px;max-width:100%;object-fit:contain;display:block;margin:0 auto"></div>'
-    +'<h1 class="h1" style="font-size:28px;margin-bottom:8px">EGADE Loop</h1>'
-    +'<p class="sub" style="font-size:14px;margin-bottom:48px">Selecciona tu idioma &nbsp;·&nbsp; Choose your language</p>'
-    +'<div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:400px;margin:0 auto">'
-    +'<div class="card card-hover" id="lang-es" style="flex:1;min-width:160px;padding:36px 24px"><div style="font-size:40px;margin-bottom:12px">🇲🇽</div><div style="font-weight:700;font-size:18px;margin-bottom:4px">Español</div><div style="font-size:13px;color:#999">Continuar en español</div></div>'
-    +'<div class="card card-hover" id="lang-en" style="flex:1;min-width:160px;padding:36px 24px"><div style="font-size:40px;margin-bottom:12px">🇺🇸</div><div style="font-weight:700;font-size:18px;margin-bottom:4px">English</div><div style="font-size:13px;color:#999">Continue in English</div></div>'
-    +'</div></div>';
+  app.innerHTML='<div class="text-center" style="padding-top:80px"><div style="margin-bottom:40px"><img src="'+EGADE_LOGO+'" alt="EGADE Business School" style="height:120px;max-width:100%;object-fit:contain;display:block;margin:0 auto"></div><h1 class="h1" style="font-size:28px;margin-bottom:8px">EGADE Loop</h1><p class="sub" style="font-size:14px;margin-bottom:48px">Selecciona tu idioma &nbsp;·&nbsp; Choose your language</p><div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:400px;margin:0 auto"><div class="card card-hover" id="lang-es" style="flex:1;min-width:160px;padding:36px 24px"><div style="font-size:40px;margin-bottom:12px">🇲🇽</div><div style="font-weight:700;font-size:18px;margin-bottom:4px">Español</div><div style="font-size:13px;color:#999">Continuar en español</div></div><div class="card card-hover" id="lang-en" style="flex:1;min-width:160px;padding:36px 24px"><div style="font-size:40px;margin-bottom:12px">🇺🇸</div><div style="font-weight:700;font-size:18px;margin-bottom:4px">English</div><div style="font-size:13px;color:#999">Continue in English</div></div></div></div>';
   document.getElementById('lang-es').addEventListener('click',function(){LANG='es';localStorage.setItem('egade_lang','es');render('home')});
   document.getElementById('lang-en').addEventListener('click',function(){LANG='en';localStorage.setItem('egade_lang','en');render('home')});
 }
@@ -327,7 +224,7 @@ function renderHome(){
 
 /* ═══ STUDENT CODE ═══ */
 function renderStudentCode(){
-  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+'</span> '+t('back')+'</button><div class="text-center" style="max-width:400px;margin:40px auto 0"><div style="margin-bottom:16px;color:#555">'+ico('key','ico-xl')+'</div><h2 class="h2" style="font-size:22px;margin-bottom:6px">'+t('enterCode')+'</h2><p style="color:#999;font-size:14px;margin-bottom:28px">'+t('codeHint')+'</p><input id="ci" class="inp" maxlength="6" placeholder="'+t('codePh')+'" style="text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;padding:16px;text-transform:uppercase"><p id="ce" style="color:#c62828;font-size:13px;margin-top:8px" class="hidden"></p><button class="btn-black full" style="margin-top:16px" id="cg">'+t('cont')+'</button></div>';
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' '+t('back')+'</button><div class="text-center" style="max-width:400px;margin:40px auto 0"><div style="margin-bottom:16px;color:#555">'+ico('key','ico-xl')+'</div><h2 class="h2" style="font-size:22px;margin-bottom:6px">'+t('enterCode')+'</h2><p style="color:#999;font-size:14px;margin-bottom:28px">'+t('codeHint')+'</p><input id="ci" class="inp" maxlength="6" placeholder="'+t('codePh')+'" style="text-align:center;font-size:24px;font-weight:800;letter-spacing:8px;padding:16px;text-transform:uppercase"><p id="ce" style="color:#c62828;font-size:13px;margin-top:8px" class="hidden"></p><button class="btn-black full" style="margin-top:16px" id="cg">'+t('cont')+'</button></div>';
   document.getElementById('bk').addEventListener('click',function(){render('home')});var inp=document.getElementById('ci');inp.focus();
   inp.addEventListener('input',function(){this.value=this.value.toUpperCase();document.getElementById('ce').classList.add('hidden')});
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('cg').click()});
@@ -337,11 +234,11 @@ function renderStudentCode(){
 /* ═══ STUDENT FORM ═══ */
 function renderStudentForm(code,formData){
   var cfg=formData.config;peers=[{id:uid(),name:'',scores:{},comment:''}];
-  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+'</span> '+t('back')+'</button><div class="text-center" style="margin-bottom:20px"><h1 class="h1">'+esc(cfg.title)+'</h1>'+(cfg.courseName?'<p style="color:#555;font-size:15px;margin:4px 0">'+esc(cfg.courseName)+'</p>':'')+'<span style="display:inline-block;margin-top:6px;font-size:11px;color:#aaa;background:#f5f5f5;padding:4px 12px;border-radius:12px;font-weight:600">Código: '+code+'</span></div>'
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' '+t('back')+'</button><div class="text-center" style="margin-bottom:20px"><h1 class="h1">'+esc(cfg.title)+'</h1>'+(cfg.courseName?'<p style="color:#555;font-size:15px;margin:4px 0">'+esc(cfg.courseName)+'</p>':'')+'<span style="display:inline-block;margin-top:6px;font-size:11px;color:#aaa;background:#f5f5f5;padding:4px 12px;border-radius:12px;font-weight:600">Código: '+code+'</span></div>'
     +(cfg.profName?'<div class="prof-banner"><div class="prof-avatar">'+getInitials(cfg.profName)+'</div><div><div style="font-weight:700;font-size:15px">'+esc(cfg.profName)+'</div><div style="font-size:13px;color:#999">Profesor'+(cfg.courseName?' · '+esc(cfg.courseName):'')+'</div></div></div>':'')
     +'<div class="instbox">'+esc(cfg.instructions)+'</div>'
     +'<div class="row2"><div><label class="label">'+t('yourName')+'</label><input class="inp" id="en" placeholder="'+t('namePh')+'"></div><div><label class="label">'+t('team')+'</label><input class="inp" id="eg" placeholder="'+t('teamPh')+'"></div></div>'
-    +'<div id="pc"></div><button class="btn-dashed" id="ap">'+ico('plus','ico-sm')+'</span> '+t('addPeer')+'</button>'
+    +'<div id="pc"></div><button class="btn-dashed" id="ap">'+ico('plus','ico-sm')+' '+t('addPeer')+'</button>'
     +'<div id="fe" class="err-box hidden">'+t('errComplete')+'</div>'
     +'<button class="btn-black full" id="sb" style="padding:15px;font-size:16px;box-shadow:0 2px 12px rgba(0,0,0,.1)">'+t('submitEval')+'</button>';
   document.getElementById('bk').addEventListener('click',function(){render('studentCode')});
@@ -372,7 +269,7 @@ function renderStudentSuccess(code){
 
 /* ═══ PROF MENU ═══ */
 function renderProfMenu(){
-  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+'</span> '+t('back')+'</button><div class="text-center" style="margin-bottom:28px"><div style="margin-bottom:12px;color:#555">'+ico('briefcase','ico-xl')+'</div><h2 class="h2" style="font-size:22px">'+t('profPanel')+'</h2></div>'
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' '+t('back')+'</button><div class="text-center" style="margin-bottom:28px"><div style="margin-bottom:12px;color:#555">'+ico('briefcase','ico-xl')+'</div><h2 class="h2" style="font-size:22px">'+t('profPanel')+'</h2></div>'
     +'<div style="max-width:420px;margin:0 auto"><div class="card card-hover" id="gc" style="padding:28px 20px"><div style="margin-bottom:8px;color:#555">'+ico('plusCircle','ico-lg')+'</div><div style="font-weight:700;font-size:15px">'+t('createNew')+'</div><div style="font-size:13px;color:#999;margin-top:2px">'+t('createNewSub')+'</div></div>'
     +'<div class="text-center" style="color:#ddd;font-size:12px;font-weight:700;margin:20px 0;letter-spacing:2px">'+t('orOpen')+'</div>'
     +'<div class="card" style="padding:24px"><div style="margin-bottom:14px"><label class="label">'+t('formCode')+'</label><input class="inp" id="oc" maxlength="6" placeholder="'+t('codePh')+'" style="text-align:center;font-size:18px;font-weight:700;letter-spacing:4px"></div>'
@@ -387,7 +284,7 @@ function renderProfMenu(){
 /* ═══ PROF CREATE ═══ */
 function renderProfCreate(){
   var criteria=DEFAULT_CRITERIA.map(function(c){return{id:c.id,label:c.label}});
-  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+'</span> '+t('back')+'</button><h2 class="h2" style="font-size:22px;margin-bottom:24px">'+t('createForm')+'</h2>'
+  app.innerHTML='<button class="btn-back" id="bk">'+ico('arrowLeft','ico-sm')+' '+t('back')+'</button><h2 class="h2" style="font-size:22px;margin-bottom:24px">'+t('createForm')+'</h2>'
     +'<div style="background:#fafafa;border-radius:12px;padding:20px 24px;margin-bottom:24px;border:1px solid #eee"><p style="font-size:12px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px">'+ico('user','ico-sm')+' Datos del profesor</p>'
     +'<div style="margin-bottom:14px"><label class="label">'+t('fullName')+'</label><input class="inp" id="pn" placeholder="'+t('nameProfPh')+'"></div>'
     +'<div><label class="label">'+t('instEmail')+'</label><input class="inp" id="pe" type="email" placeholder="'+t('emailPh')+'"><p style="font-size:12px;color:#aaa;margin-top:4px">'+t('emailHint')+'</p></div></div>'
@@ -406,7 +303,7 @@ function renderProfCreate(){
 function renderProfCreated(code,form,pwd){
   var cfg=form.config,qr=getQrImageUrl(code),surl=getStudentUrl(code);
   app.innerHTML='<div class="text-center"><div class="success-circle" style="background:#f0f0f0;color:#111">'+ico('check','ico-xl')+'</div><h2 class="h2" style="font-size:24px;margin-bottom:4px">'+t('formCreated')+'</h2><p style="color:#999;font-size:14px;margin-bottom:8px">'+esc(cfg.courseName)+'</p></div>'
-    +'<div class="email-banner" id="email-status" style="background:#f0f0f0;border-color:#ddd;color:#333">'+ico('checkCircle','ico-sm')+' <span>'+t('credsSent')+'  <strong>'+esc(cfg.profEmail)+'</strong></span></div>'
+    +'<div class="email-banner" id="email-status" style="background:#f0f0f0;border-color:#ddd;color:#333">'+ico('checkCircle','ico-sm')+' <span>Credenciales enviadas automáticamente a <strong>'+esc(cfg.profEmail)+'</strong></span></div>'
     +'<div class="credential-box"><p style="font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px">'+ico('lock','ico-sm')+' Tus credenciales</p>'
     +'<div class="credential-row"><span class="credential-label">Código</span><span class="credential-value" style="font-size:22px;letter-spacing:4px">'+code+'</span></div>'
     +'<div class="credential-row"><span class="credential-label">Contraseña</span><span class="credential-value">'+esc(pwd)+'</span></div>'
@@ -447,7 +344,7 @@ function renderProfDash(code){
       document.getElementById('cpl').addEventListener('click',function(){navigator.clipboard.writeText(surl).then(function(){document.getElementById('cpl').innerHTML=ico('check','ico-sm')+' Copiado'})});
 
     }else if(tab==='results'){
-      var h='<div class="send-email-box"><p style="font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px">'+ico('mail','ico-sm')+' Enviar resultados por correo</p><div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><div style="flex:1;min-width:200px"><label class="label">Correo del destinatario</label><input class="inp" id="send-email" value="'+esc(cfg.profEmail||'')+'" placeholder="'+t('emailPh')+'"></div><button class="btn-black" id="send-results" style="padding:12px 24px;white-space:nowrap;display:flex;align-items:center;gap:6px" '+(fil.length?'':'disabled')+'>'+ico('send','ico-sm')+' Enviar</button></div><div id="send-status"></div>'+(fil.length?'':'<p style="font-size:12px;color:#aaa;margin-top:8px">'+t('noResults')+'</p>')+'</div>';
+      var h='<div class="send-email-box"><p style="font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px">'+ico('mail','ico-sm')+' Enviar resultados por correo</p><div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><div style="flex:1;min-width:200px"><label class="label">Correo del destinatario</label><input class="inp" id="send-email" value="'+esc(cfg.profEmail||'')+'" placeholder="'+t('emailPh')+'"></div><button class="btn-black" id="send-results" style="padding:12px 24px;white-space:nowrap;display:flex;align-items:center;gap:6px" '+(fil.length?'':'disabled')+'>'+ico('send','ico-sm')+' Enviar</button></div><div id="send-status"></div>'+(fil.length?'':'<p style="font-size:12px;color:#aaa;margin-top:8px">'+t('noResultsTxt')+'</p>')+'</div>';
       h+='<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center"><button class="btn-outline" id="dl" style="padding:10px 20px" '+(fil.length?'':'disabled')+'>'+ico('download','ico-sm')+' Descargar resultados en Excel</button><button class="btn-outline" id="rf" style="padding:10px 16px">'+ico('refresh','ico-sm')+' Actualizar</button><button class="btn-outline" id="clr" style="padding:10px 16px;'+(res.length?'color:#c62828;border-color:#c62828':'color:#ddd;border-color:#eee')+'" '+(res.length?'':'disabled')+'>'+ico('trash','ico-sm')+' Eliminar</button>';
       if(grps.length>1){h+='<select id="fgs" class="inp" style="width:auto;padding:10px 12px;font-size:13px"><option value="">Todos</option>';grps.forEach(function(g){h+='<option value="'+esc(g)+'" '+(fg===g?'selected':'')+'>'+esc(g)+'</option>'});h+='</select>'}h+='</div><div id="ca"></div>';
       if(aggKeys.length>0){h+='<h3 class="h2" style="font-size:17px;margin-top:8px">Resumen por evaluado</h3>';aggKeys.map(function(k){return agg[k]}).sort(function(a,b){var aa=cfg.criteria.reduce(function(s,c){return s+(a.scores[c.id]||0)},0)/(a.count*cfg.criteria.length);var bb=cfg.criteria.reduce(function(s,c){return s+(b.scores[c.id]||0)},0)/(b.count*cfg.criteria.length);return bb-aa}).forEach(function(p){var avg=cfg.criteria.reduce(function(s,c){return s+(p.scores[c.id]||0)},0)/(p.count*cfg.criteria.length);var bc=avg>=4?'badge-g':avg>=3?'badge-y':'badge-r';h+='<div class="card" style="padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div><span style="font-weight:700;font-size:14px">'+esc(p.name)+'</span><span style="font-size:12px;color:#aaa;margin-left:8px">'+esc(p.group)+'</span></div><span class="badge '+bc+'">'+avg.toFixed(1)+'</span></div><div>';cfg.criteria.forEach(function(c){var ca=(p.scores[c.id]||0)/p.count;h+='<span class="tag">'+esc(c.label.slice(0,20))+'… <strong>'+ca.toFixed(1)+'</strong></span>'});h+='</div><div style="font-size:11px;color:#aaa;margin-top:4px">'+p.count+' eval.</div>';if(p.comments.length){h+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0">';p.comments.forEach(function(cm){h+='<div style="font-size:12px;color:#777;margin-bottom:3px"><span style="font-weight:600;color:#aaa">'+esc(cm.from)+':</span> <em>"'+esc(cm.text)+'"</em></div>'});h+='</div>'}h+='</div>'})}
