@@ -42,3 +42,19 @@ function getOrCreateSheet(ss, name, headers) {
   }
   return sheet;
 }
+
+// ── Función de prueba: ejecútala manualmente para verificar conexión ─
+function testConexion() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  handleFormCreated(ss, {
+    code: 'TEST01',
+    title: 'Prueba de Conexión',
+    courseName: 'Curso de Prueba',
+    profName: 'Profesor Test',
+    profEmail: 'test@tec.mx',
+    criteria: [{id:'c1',label:'Participación'},{id:'c2',label:'Calidad'}],
+    studentUrl: 'https://angellicromero.github.io/egade-coevaluacion/?code=TEST01',
+    createdAt: Date.now()
+  });
+  Logger.log('✅ Conexión exitosa — revisa la pestaña Formularios en tu Google Sheet');
+}
