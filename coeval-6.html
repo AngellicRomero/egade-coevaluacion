@@ -238,7 +238,7 @@ function createStars(val,onChange){var w=document.createElement('div');w.classNa
 
 /* ═══ RENDER ═══ */
 var app=document.getElementById('app'),peers=[];
-function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);var fl=document.getElementById('fixed-logo'),fli=document.getElementById('fixed-logo-img');if(fl){if(scr==='langSelect'){fl.classList.add('hidden')}else{if(fli&&!fli.src.startsWith('data'))fli.src=EGADE_LOGO;fl.classList.remove('hidden')}}({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
+function render(scr,ctx){ctx=ctx||{};app.innerHTML='';window.scrollTo(0,0);var fl=document.getElementById('fixed-logo'),fli=document.getElementById('fixed-logo-img');if(fl){if(scr==='langSelect'||scr==='home'){fl.classList.add('hidden')}else{if(fli&&!fli.src.startsWith('data'))fli.src=EGADE_LOGO;fl.classList.remove('hidden')}}({langSelect:renderLangSelect,home:renderHome,studentCode:renderStudentCode,studentForm:function(){renderStudentForm(ctx.code,ctx.form)},studentSuccess:function(){renderStudentSuccess(ctx.code)},profMenu:renderProfMenu,profCreate:renderProfCreate,profCreated:function(){renderProfCreated(ctx.code,ctx.form,ctx.password)},profDash:function(){renderProfDash(ctx.code)}})[scr]()}
 
 /* ═══ LANG SELECT ═══ */
 function renderLangSelect(){
