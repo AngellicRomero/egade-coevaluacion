@@ -3,6 +3,10 @@
 //  Recibe datos desde la app y los guarda en Google Sheets
 // ═══════════════════════════════════════════════════════
 
+// ► PEGA AQUÍ el ID de tu Google Sheet (la parte larga de la URL)
+//   Ejemplo: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms'
+var SPREADSHEET_ID  = '1E9ZTSQCQQBWazTitEEEBwE6dYXXK2fG-sWK7luwM3XA';
+
 var SHEET_FORMS     = 'Formularios';
 var SHEET_RESPONSES = 'Respuestas';
 
@@ -10,7 +14,7 @@ var SHEET_RESPONSES = 'Respuestas';
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
-    var ss   = SpreadsheetApp.getActiveSpreadsheet();
+    var ss   = SpreadsheetApp.openById(SPREADSHEET_ID);
 
     if (data.type === 'form_created') {
       handleFormCreated(ss, data);
