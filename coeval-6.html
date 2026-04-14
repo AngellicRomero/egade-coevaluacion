@@ -160,7 +160,8 @@ function sendWebhook(payload,cb){
       +'&title='+encodeURIComponent(payload.title)
       +'&studentUrl='+encodeURIComponent(payload.studentUrl)
       +'&createdAt='+payload.createdAt
-      +'&criteria='+encodeURIComponent((payload.criteria||[]).map(function(c){return c.label}).join(' | '));
+      +'&criteria='+encodeURIComponent((payload.criteria||[]).map(function(c){return c.label}).join(' | '))
+      +'&lang='+encodeURIComponent(LANG||'es');
   }else if(payload.type==='response'){
     url=EMAIL_WEBHOOK+'?action=response&data='+encodeURIComponent(JSON.stringify(payload));
   }else{return}

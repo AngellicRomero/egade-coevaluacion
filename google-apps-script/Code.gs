@@ -20,38 +20,66 @@ function doGet(e) {
         p.courseName, p.profEmail, criteriaStr, p.studentUrl
       ]);
 
-      // 2. Enviar correo automáticamente
+      // 2. Enviar correo (bilingüe según p.lang)
+      var isEN = p.lang === 'en';
       var sep  = '────────────────────────────';
-      var body = [
-        'Hola ' + p.profName + ',',
-        '',
-        'Tu formulario de coevaluación fue creado exitosamente.',
-        'Guarda este correo como respaldo de tus credenciales de acceso.',
-        '',
-        sep,
-        '  DATOS DEL FORMULARIO',
-        sep,
-        '  Profesor  : ' + p.profName,
-        '  Curso     : ' + p.courseName,
-        '  Código    : ' + p.code,
-        '  Contraseña: ' + p.password,
-        '  Creado    : ' + Utilities.formatDate(new Date(Number(p.ts || p.createdAt)), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
-        sep,
-        '',
-        'Link de acceso para alumnos:',
-        p.studentUrl,
-        '',
-        'Ingresa al panel de resultados con tu código y contraseña.',
-        '',
-        '— CoEval | Plataforma de coevaluación entre pares',
-        '  Tecnológico de Monterrey – EGADE'
-      ].join('\n');
+      var ts   = new Date(Number(p.ts || p.createdAt));
+      var body, subj;
+      if (isEN) {
+        subj = '[EGADE Loop] Your form credentials – ' + p.courseName;
+        body = [
+          'Hi ' + p.profName + ',',
+          '',
+          'Below are the access credentials for your co-evaluation form.',
+          'Save this email as a backup.',
+          '',
+          sep,
+          '  FORM DETAILS',
+          sep,
+          '  Professor : ' + p.profName,
+          '  Course    : ' + p.courseName,
+          '  Code      : ' + p.code,
+          '  Password  : ' + p.password,
+          '  Created   : ' + Utilities.formatDate(ts, Session.getScriptTimeZone(), 'MM/dd/yyyy HH:mm'),
+          sep,
+          '',
+          'Student access link:',
+          p.studentUrl,
+          '',
+          'Log in to the results panel with your code and password.',
+          '',
+          '— EGADE Loop | Peer evaluation platform',
+          '  Tecnológico de Monterrey – EGADE'
+        ].join('\n');
+      } else {
+        subj = '[EGADE Loop] Credenciales de tu formulario – ' + p.courseName;
+        body = [
+          'Hola ' + p.profName + ',',
+          '',
+          'Tu formulario de coevaluación fue creado exitosamente.',
+          'Guarda este correo como respaldo de tus credenciales de acceso.',
+          '',
+          sep,
+          '  DATOS DEL FORMULARIO',
+          sep,
+          '  Profesor  : ' + p.profName,
+          '  Curso     : ' + p.courseName,
+          '  Código    : ' + p.code,
+          '  Contraseña: ' + p.password,
+          '  Creado    : ' + Utilities.formatDate(ts, Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
+          sep,
+          '',
+          'Link de acceso para alumnos:',
+          p.studentUrl,
+          '',
+          'Ingresa al panel de resultados con tu código y contraseña.',
+          '',
+          '— EGADE Loop | Plataforma de evaluación entre pares',
+          '  Tecnológico de Monterrey – EGADE'
+        ].join('\n');
+      }
 
-      MailApp.sendEmail({
-        to: p.profEmail,
-        subject: '[CoEval] Credenciales de tu formulario – ' + p.courseName,
-        body: body
-      });
+      MailApp.sendEmail({ to: p.profEmail, subject: subj, body: body });
 
       return ContentService.createTextOutput('ok').setMimeType(ContentService.MimeType.TEXT);
     } catch(err) {
