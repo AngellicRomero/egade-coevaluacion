@@ -20,9 +20,9 @@ function doPost(e) {
 }
 
 function handleFormCreated(ss, data) {
-  var sheet = getOrCreateSheet(ss, SHEET_FORMS, ['Fecha Creación','Código','Título','Curso','Profesor','Email Profesor','Criterios','Link Alumnos']);
+  var sheet = getOrCreateSheet(ss, SHEET_FORMS, ['Fecha Creación','Código','Profesor','Título','Curso','Email Profesor','Criterios','Link Alumnos']);
   var criteriaStr = (data.criteria||[]).map(function(c){return c.label}).join(' | ');
-  sheet.appendRow([new Date(data.createdAt), data.code, data.title, data.courseName, data.profName, data.profEmail, criteriaStr, data.studentUrl]);
+  sheet.appendRow([new Date(data.createdAt), data.code, data.profName, data.title, data.courseName, data.profEmail, criteriaStr, data.studentUrl]);
 }
 
 function handleResponse(ss, data) {
