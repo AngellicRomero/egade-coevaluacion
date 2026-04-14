@@ -26,6 +26,9 @@ function doGet(e) {
       var divider = '════════════════════════════';
       var ts      = new Date(Number(p.ts || p.createdAt));
 
+      // URL limpia (sin ?d=...) para que se vea bien en el correo
+      var cleanUrl = 'https://angellicromero.github.io/egade-coevaluacion/?code=' + p.code;
+
       var blockEN = [
         'Hi ' + p.profName + ',',
         '',
@@ -43,7 +46,7 @@ function doGet(e) {
         sep,
         '',
         'Student access link:',
-        p.studentUrl,
+        cleanUrl,
         '',
         'Log in to the results panel with your code and password.',
         '',
@@ -68,7 +71,7 @@ function doGet(e) {
         sep,
         '',
         'Link de acceso para alumnos:',
-        p.studentUrl,
+        cleanUrl,
         '',
         'Ingresa al panel de resultados con tu código y contraseña.',
         '',
