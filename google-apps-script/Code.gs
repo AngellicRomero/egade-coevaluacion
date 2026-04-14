@@ -20,9 +20,45 @@ function doPost(e) {
 }
 
 function handleFormCreated(ss, data) {
+  // 1. Guardar en hoja de cálculo
   var sheet = getOrCreateSheet(ss, SHEET_FORMS, ['Fecha Creación','Código','Profesor','Título','Curso','Email Profesor','Criterios','Link Alumnos']);
   var criteriaStr = (data.criteria||[]).map(function(c){return c.label}).join(' | ');
   sheet.appendRow([new Date(data.createdAt), data.code, data.profName, data.title, data.courseName, data.profEmail, criteriaStr, data.studentUrl]);
+
+  // 2. Enviar correo de credenciales automáticamente
+  if (data.profEmail && data.password) {
+    var sep = '────────────────────────────';
+    var body = [
+      'Hola ' + data.profName + ',',
+      '',
+      'Tu formulario de coevaluación fue creado exitosamente.',
+      'Guarda este correo como respaldo de tus credenciales de acceso.',
+      '',
+      sep,
+      '  DATOS DEL FORMULARIO',
+      sep,
+      '  Profesor  : ' + data.profName,
+      '  Curso     : ' + data.courseName,
+      '  Código    : ' + data.code,
+      '  Contraseña: ' + data.password,
+      '  Creado    : ' + Utilities.formatDate(new Date(data.createdAt), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
+      sep,
+      '',
+      'Link de acceso para alumnos:',
+      data.studentUrl,
+      '',
+      'Ingresa al panel de resultados con tu código y contraseña.',
+      '',
+      '— CoEval | Plataforma de coevaluación entre pares',
+      '  Tecnológico de Monterrey – EGADE'
+    ].join('\n');
+
+    MailApp.sendEmail({
+      to: data.profEmail,
+      subject: '[CoEval] Credenciales de tu formulario – ' + data.courseName,
+      body: body
+    });
+  }
 }
 
 function handleResponse(ss, data) {
