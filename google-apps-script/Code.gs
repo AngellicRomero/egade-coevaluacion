@@ -2,6 +2,11 @@ var SPREADSHEET_ID  = '1E9ZTSQCQQBWazTitEEEBwE6dYXXK2fG-sWK7luwM3XA';
 var SHEET_FORMS     = 'Formularios';
 var SHEET_RESPONSES = 'Respuestas';
 
+function doGet(e) {
+  return ContentService.createTextOutput('CoEval OK — ' + new Date().toISOString())
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
