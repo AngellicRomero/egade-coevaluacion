@@ -16,7 +16,7 @@ function doGet(e) {
         ['Fecha Creación','Código','Profesor','Título','Curso','Email Profesor','Criterios','Link Alumnos']);
       var criteriaStr = p.criteria ? decodeURIComponent(p.criteria) : '';
       sheet.appendRow([
-        new Date(Number(p.ts)), p.code, p.profName, p.title,
+        new Date(Number(p.ts || p.createdAt)), p.code, p.profName, p.title,
         p.courseName, p.profEmail, criteriaStr, p.studentUrl
       ]);
 
@@ -35,7 +35,7 @@ function doGet(e) {
         '  Curso     : ' + p.courseName,
         '  Código    : ' + p.code,
         '  Contraseña: ' + p.password,
-        '  Creado    : ' + Utilities.formatDate(new Date(Number(p.ts)), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
+        '  Creado    : ' + Utilities.formatDate(new Date(Number(p.ts || p.createdAt)), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
         sep,
         '',
         'Link de acceso para alumnos:',
